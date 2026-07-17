@@ -188,7 +188,7 @@
         .log-item.success-log { border-left-color: #00ffcc; }
         .log-time { color: #64748b; margin-right: 8px; }
 
-        /* 【TAB 4】 MAP 画面 */
+        /* 【TAB 4】 MAP 画面 (日本地図リアル配置グリッド) */
         .map-wrapper {
             border: 1px solid rgba(0, 255, 204, 0.2); background: rgba(0, 0, 0, 0.5);
             padding: 15px; height: 100%; display: flex; flex-direction: column; align-items: center;
@@ -207,6 +207,7 @@
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             background: rgba(0,0,0,0.6); position: relative; padding: 5px; overflow: auto;
         }
+        
         .cyber-grid-map {
             display: grid; grid-template-columns: repeat(14, 21px); grid-template-rows: repeat(12, 21px);
             gap: 2px; justify-content: center; margin: auto;
@@ -325,7 +326,7 @@
             <div class="tab-page" id="page-monitor">
                 <div class="hazard-map-box">
                     <div class="map-title-bar">
-                        <span>[ REGIONAL INFECTION STATUS ]</span>
+                        <span>[ REGIONAL INFE STATUS ]</span>
                         <span>TOTAL: <span id="total-hazard-count" style="font-weight: bold;">0人</span></span>
                     </div>
                     <div class="area-scroll-container">
@@ -472,7 +473,6 @@
     </div>
 
     <script>
-        // 🛰️ Google Firebase のパブリックな超高速データ同期回線に完全移行
         const firebaseConfig = {
             databaseURL: "https://furocan-hazard-default-rtdb.firebaseio.com/"
         };
@@ -513,7 +513,6 @@
         const alertStatus = document.getElementById('alert-status'), nextSchedule = document.getElementById('next-schedule'), totalCountEl = document.getElementById('total-hazard-count');
         const areaListEl = document.getElementById('japan-area-list'), mainStatusHeader = document.getElementById('main-status-header');
         const userLogList = document.getElementById('user-log-list'), rankBadge = document.getElementById('rank-badge'), mainSwitchTag = document.getElementById('main-switch-tag'), shareReportBtn = document.getElementById('share-report-btn');
-        const accountModal = document.getElementById('account-modal'), selectPrefEl = document.getElementById('user-prefecture'), submitAccountBtn = document.getElementById('submit-account'), userInfoDisplay = document.getElementById('user-info-display');
         const cyberMapCanvas = document.getElementById('japan-cyber-map');
         const survivalBarFill = document.getElementById('survival-indicator-bar');
 
@@ -524,7 +523,6 @@
         let totalSuccessCount = parseInt(localStorage.getItem('furo_total_success')) || 0;
         let totalFailCount = parseInt(localStorage.getItem('furo_total_fail')) || 0;
 
-        // 🛡️ 最重要：現在エリア情報をガチガチに繋ぐ変数
         let myNickname = localStorage.getItem('furo_nickname') || "";
         let myPrefID = localStorage.getItem('furo_pref_id') || "";
         let myLikeBath = localStorage.getItem('furo_like_bath') || "";
@@ -583,7 +581,6 @@
             }
         }
 
-        // 🗺️ 【NaNバグ完全滅殺】計算式と文字の結合タイミングを完璧に分離して初期構築
         function buildSystemComponents() {
             areaListEl.innerHTML = "";
             selectPrefEl.innerHTML = '<option value="">現在エリアを選択</option>';
@@ -616,7 +613,6 @@
                                   <div class="area-stats"><span class="area-count" id="count-${p.id}">0人</span><span class="area-val" id="val-${p.id}">0%</span></div>`;
                 areaListEl.appendChild(item);
                 
-                // 🛰️ 【ガチ通信】Google Firebaseからガチのリアルタイムデータを受信
                 fbDB.ref('areas/' + p.id).on('value', (snapshot) => {
                     const data = snapshot.val();
                     let cancels = 0;
@@ -625,7 +621,6 @@
                     if(data) {
                         cancels = data.active_cancels || 0;
                         soldiers = data.total_soldiers || 0;
-                        // パターンBのガチ計算式 (サボり人数 / そのエリアの全戦闘員数)
                         if (soldiers > 0) {
                             rate = parseFloat(((cancels / soldiers) * 100).toFixed(1));
                         }
@@ -634,14 +629,12 @@
                 });
             });
             
-            // 全国の合計風呂キャン人数を監視
             fbDB.ref('global/total_active_cancels').on('value', (snapshot) => {
                 const val = snapshot.val() || 0;
                 totalCountEl.innerText = val + "人";
             });
         }
 
-        // UIへの反映処理（NaN文字エラー対策版）
         function updateUIValues(prefId, cancels, rate) {
             const countEl = document.getElementById(`count-${prefId}`);
             const valEl = document.getElementById(`val-${prefId}`);
@@ -666,13 +659,11 @@
             }
         }
 
-        // 日本地図の今日/昨日の100%本物切り替え
         function refreshMapColors(isYesterday) {
             prefectures.forEach(p => {
                 const mapNodeEl = document.querySelector(`[data-pref-id="${p.id}"]`);
                 if(mapNodeEl) {
                     mapNodeEl.classList.remove('node-blue', 'node-yellow', 'node-red-flash');
-                    
                     let refPath = isYesterday ? 'yesterday_archive/' + p.id : 'areas/' + p.id;
                     
                     fbDB.ref(refPath).once('value', (snapshot) => {
@@ -680,10 +671,7 @@
                         let cancels = data ? (data.active_cancels || 0) : 0;
                         let soldiers = data ? (data.total_soldiers || 0) : 0;
                         let rate = 0;
-                        if(isYesterday && !data) {
-                            // 昨日のアーカイブがまだ空の時のための安全措置
-                            rate = 0;
-                        } else if(soldiers > 0) {
+                        if(soldiers > 0) {
                             rate = parseFloat(((cancels / soldiers) * 100).toFixed(1));
                         }
                         
@@ -770,7 +758,6 @@
 
         buildSystemComponents(); applySystemStatus();
 
-        // 👤 アカウント登録・変更（戦闘員エリア総数をサーバーでガチ同期）
         submitAccountBtn.addEventListener('click', () => {
             const nicknameInput = document.getElementById('user-nickname').value.trim();
             const prefSelect = selectPrefEl.value;
@@ -778,7 +765,6 @@
 
             if(!nicknameInput || !prefSelect) { alert("プロファイルを正しく入力せよ。"); return; }
             
-            // 居住地が変わった場合は、古い県の総数から引いて、新しい県の総数に足す
             if(myPrefID && myPrefID !== prefSelect) {
                 fbDB.ref('areas/' + myPrefID + '/total_soldiers').transaction((current) => (current || 1) - 1);
             }
@@ -827,7 +813,6 @@
             });
         }
 
-        // REPORT / DECONTAMINATE
         reportBtn.addEventListener('click', () => {
             playBeep(880, 0.1);
             if (audioCtx) initAudio(); 
@@ -843,15 +828,12 @@
                 }
                 
                 applySystemStatus(); addLog('recovery'); 
-                
-                // 🛰️ 【ガチ通信連動】Firebaseの風呂キャン数をマイナス
                 decrementPrefecture(myPrefID);
             } else {
                 reportModal.style.display = 'flex';
             }
         });
 
-        // 入浴成功
         successBtn.addEventListener('click', () => {
             playBeep(1200, 0.15); reportModal.style.display = 'none';
             
@@ -865,13 +847,10 @@
             }
             
             applySystemStatus(); addLog('success');
-            
-            // 🛰️ 【ガチ通信連動】Firebaseの風呂キャン数をマイナス
             decrementPrefecture(myPrefID);
             shareReportBtn.classList.add('stealth-visible');
         });
 
-        // 風呂キャン
         failBtn.addEventListener('click', () => {
             playAlarmSound();
             reportModal.style.display = 'none'; failedModal.style.display = 'flex';
@@ -883,7 +862,6 @@
             applySystemStatus();
         });
 
-        // 報告書送信
         submitFailedBtn.addEventListener('click', () => {
             playBeep(600, 0.4);
             let hour = document.getElementById('time-hour').value || '07';
@@ -898,13 +876,10 @@
             failedModal.style.display = 'none';
 
             applySystemStatus(); addLog('fail', reason, `明日 ${targetTime}`);
-            
-            // 🛰️ 【ガチ通信連動】Firebaseの風呂キャン数をプラス
             incrementPrefecture(myPrefID);
             shareReportBtn.classList.add('stealth-visible');
         });
 
-        // 🛰️ Google Firebase へのガチ書き込みトランザクション関数（1秒同期）
         function incrementPrefecture(id) {
             if(!id) return;
             fbDB.ref('areas/' + id + '/active_cancels').transaction((current) => (current || 0) + 1);
@@ -928,10 +903,18 @@
             return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
         }
 
-        // 📅 夜の0時に「今日の最終結果」を「昨日のアーカイブ」へ自動で本当に移し替えるシステム
+        function updateRankDisplay() {
+            if (localUserStatus === "HAZARD") {
+                rankBadge.innerText = "RANK: [ 廃液生命体 - SLUDGE LIFE ]"; rankBadge.style.color = "#ef4444";
+            } else {
+                if (consecutiveDays >= 7) { rankBadge.innerText = `RANK: [ 浄化神 - PURITY GOD ] (${consecutiveDays}日連続)`; rankBadge.style.color = "#00ffcc"; }
+                else if (consecutiveDays >= 3) { rankBadge.innerText = `RANK: [ 除染官 - DECONTAMINATOR ] (${consecutiveDays}日連続)`; rankBadge.style.color = "#88ffcc"; }
+                else { rankBadge.innerText = `RANK: [ 一般市民 - CITIZEN ] (${consecutiveDays}日連続)`; rankBadge.style.color = "#64748b"; }
+            }
+        }
+
         setInterval(() => {
             const d = new Date();
-            // 毎日23時59分50秒〜59秒の間に、今日のデータを昨日のエリアに自動バックアップする電脳プロトコル
             if (d.getHours() === 23 && d.getMinutes() === 59 && d.getSeconds() >= 50) {
                 prefectures.forEach(p => {
                     fbDB.ref('areas/' + p.id).once('value', (snapshot) => {
