@@ -24,15 +24,10 @@
         /* --- 🚀 宇宙船のハッチ --- */
         .door {
             position: absolute;
-            left: 0;
-            width: 100%;
-            height: 50%;
+            left: 0; width: 100%; height: 50%;
             background: linear-gradient(135deg, #1b2330, #090d16);
-            border: 4px solid #1f2937;
-            z-index: 10;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            border: 4px solid #1f2937; z-index: 10;
+            display: flex; justify-content: center; align-items: center;
             transition: transform 1.2s cubic-bezier(0.85, 0, 0.15, 1);
             box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.9);
         }
@@ -40,28 +35,16 @@
         .door-bottom { bottom: 0; border-top: 5px double #00ffcc; }
         .door::after {
             content: "• • • SECURITY LOCK: SYSTEM ONLINE • • •";
-            color: #ef4444;
-            font-size: 14px;
-            letter-spacing: 3px;
+            color: #ef4444; font-size: 14px; letter-spacing: 3px;
         }
 
         #boot-btn {
-            position: absolute;
-            z-index: 11;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            padding: 16px 35px;
-            background-color: #ef4444;
-            color: #fff;
-            border: 2px solid #f87171;
-            border-radius: 4px;
-            font-size: 18px;
-            cursor: pointer;
-            box-shadow: 0 0 25px #ef4444;
-            font-weight: bold;
-            transition: all 0.3s;
-            letter-spacing: 3px;
+            position: absolute; z-index: 11; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); padding: 18px 40px;
+            background-color: #ef4444; color: #fff; border: 2px solid #f87171;
+            border-radius: 4px; font-size: 20px; cursor: pointer;
+            box-shadow: 0 0 25px #ef4444; font-weight: bold;
+            transition: all 0.3s; letter-spacing: 3px;
         }
         #boot-btn:hover { background-color: #f87171; box-shadow: 0 0 35px #f87171; }
         .open-top { transform: translateY(-100%); }
@@ -69,15 +52,10 @@
 
         /* --- 🛰️ メイン画面 --- */
         .control-panel {
-            width: 100%;
-            height: 100%;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            width: 100%; height: 100%; padding: 15px;
+            display: flex; flex-direction: column;
             background: radial-gradient(circle, #09101d 0%, #03060a 100%);
-            opacity: 0;
-            transition: opacity 1s ease, background 0.3s ease;
+            opacity: 0; transition: opacity 1s ease, background 0.3s ease;
         }
         .panel-visible { opacity: 1; }
         .hazard-alert-bg {
@@ -85,186 +63,201 @@
             animation: red-flash-bg 1s infinite alternate;
         }
 
+        /* 最上部：ステータスバー */
         .status-header {
-            border: 1px solid #00ffcc;
-            padding: 8px 12px;
+            border: 1px solid #00ffcc; padding: 10px 15px;
             background: rgba(0, 255, 204, 0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            display: flex; justify-content: space-between; align-items: center;
         }
         .status-header.hazard-alert-border { border-color: #ef4444; background: rgba(239, 68, 68, 0.1); }
-        .status-title { font-size: 12px; letter-spacing: 2px; color: #00ffcc; }
+        .status-title { font-size: 14px; letter-spacing: 2px; color: #00ffcc; }
         .status-badge {
-            background: #00ffcc; color: #000; padding: 3px 10px; font-weight: bold; font-size: 11px; letter-spacing: 1px;
+            background: #00ffcc; color: #000; padding: 4px 12px;
+            font-weight: bold; font-size: 13px; letter-spacing: 1px;
         }
         .status-badge.hazard-badge { background: #ef4444; color: #fff; animation: blink 0.5s infinite alternate; }
 
-        /* レイアウト分割（中央部） */
-        .panel-main-body {
-            display: grid;
-            grid-template-columns: 1.2fr 1fr;
-            gap: 12px;
-            flex-grow: 1;
-            margin: 10px 0;
-            min-height: 0;
+        /* 🎛️ 画面切り替え用の「電脳タブバー」 */
+        .tab-bar {
+            display: flex; gap: 5px; margin-top: 15px;
+            border-bottom: 2px solid #1e293b; padding-bottom: 5px;
+        }
+        .tab-button {
+            flex: 1; padding: 12px 5px; background: #0c1524;
+            border: 1px solid #1e293b; color: #475569;
+            font-size: 14px; font-weight: bold; cursor: pointer;
+            letter-spacing: 1px; transition: all 0.2s;
+            text-align: center;
+        }
+        .tab-button.active-tab {
+            background: #112235; border-color: #00ffcc; color: #00ffcc;
+            box-shadow: 0 0 10px rgba(0, 255, 204, 0.2);
+        }
+        .control-panel.hazard-alert-bg .tab-button.active-tab {
+            border-color: #ef4444; color: #ef4444;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
         }
 
-        .center-console {
-            border: 1px solid rgba(0, 255, 204, 0.2);
-            background: rgba(0, 0, 0, 0.4);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 10px;
+        /* タブの中身コンテナ */
+        .tab-content-container {
+            flex-grow: 1; margin-top: 15px; min-height: 0; position: relative;
         }
-        .console-tag { font-size: 11px; color: #88ffcc; letter-spacing: 3px; margin-bottom: 10px; }
+        .tab-page {
+            position: absolute; width: 100%; height: 100%;
+            display: none; flex-direction: column;
+        }
+        .page-active { display: flex; }
+
+        /* --- 【TAB 1】 CONTROL 画面 (文字を大きく、すっきりと) --- */
+        .center-console {
+            height: 100%; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            border: 1px solid rgba(0, 255, 204, 0.1); background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+        }
+        .console-tag { font-size: 14px; color: #88ffcc; letter-spacing: 3px; margin-bottom: 25px; }
         .report-btn {
-            width: 130px; height: 130px; border-radius: 50%;
+            width: 170px; height: 170px; border-radius: 50%;
             background: radial-gradient(circle, #0f172a 0%, #020617 100%);
-            border: 4px solid #00ffcc; color: #00ffcc; font-size: 20px; font-weight: bold;
-            cursor: pointer; box-shadow: 0 0 25px rgba(0, 255, 204, 0.2); transition: all 0.3s ease;
+            border: 5px solid #00ffcc; color: #00ffcc; font-size: 26px; font-weight: bold;
+            cursor: pointer; box-shadow: 0 0 30px rgba(0, 255, 204, 0.3); transition: all 0.3s ease;
             position: relative; letter-spacing: 4px; padding-left: 4px;
         }
         .report-btn::before {
-            content: ''; position: absolute; top: -8px; left: -8px; right: -8px; bottom: -8px;
-            border-radius: 50%; border: 1px dashed rgba(0, 255, 204, 0.4); animation: spin 12s linear infinite;
+            content: ''; position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px;
+            border-radius: 50%; border: 1px dashed rgba(0, 255, 204, 0.3); animation: spin 12s linear infinite;
         }
-        .report-btn:hover { box-shadow: 0 0 45px rgba(0, 255, 204, 0.5); background: rgba(0, 255, 204, 0.08); }
-
-        /* 🔒 ボタンロック時のデザイン */
-        .report-btn:disabled {
-            border-color: #334155;
-            color: #475569;
-            background: #0f172a;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
-        .report-btn:disabled::before {
-            animation: none;
-            border-color: rgba(51, 65, 85, 0.3);
-        }
-
+        .report-btn:hover { box-shadow: 0 0 50px rgba(0, 255, 204, 0.6); }
         .next-schedule-display {
-            margin-top: 15px; font-size: 11px; color: #f87171; border: 1px solid #ef4444;
-            padding: 4px 12px; background: rgba(239, 68, 68, 0.1); border-radius: 3px;
+            margin-top: 25px; font-size: 14px; color: #f87171; border: 1px solid #ef4444;
+            padding: 8px 20px; background: rgba(239, 68, 68, 0.1); border-radius: 3px;
             display: none; letter-spacing: 2px; font-weight: bold;
         }
-        .rank-display {
-            margin-top: 10px; font-size: 12px; color: #00ffcc; letter-spacing: 1px;
-            font-weight: bold;
-        }
+        .rank-display { margin-top: 20px; font-size: 16px; color: #00ffcc; letter-spacing: 1px; font-weight: bold; }
 
-        /* 📅 敗北履歴ログエリア */
-        .log-console {
-            border: 1px solid rgba(0, 255, 204, 0.2);
-            background: rgba(0, 0, 0, 0.5);
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            min-height: 0;
-        }
-        .log-title { font-size: 11px; color: #64748b; border-bottom: 1px solid rgba(0,255,204,0.2); padding-bottom: 4px; letter-spacing: 1px; }
-        .log-list { flex-grow: 1; overflow-y: auto; margin-top: 8px; display: flex; flex-direction: column; gap: 6px; }
-        .log-list::-webkit-scrollbar { width: 3px; }
-        .log-list::-webkit-scrollbar-thumb { background: #64748b; }
-        .log-item {
-            font-size: 11px; padding: 6px; background: rgba(255,255,255,0.02);
-            border-left: 2px solid #ef4444; line-height: 1.4;
-        }
-        .log-item.success-log { border-left-color: #00ffcc; }
-        .log-time { color: #64748b; font-family: monospace; margin-right: 5px; }
-
-        /* ③ 画面下部：リアルタイム全国汚染監視モニター */
+        /* --- 【TAB 2】 MONITOR 画面 (文字を大きく見やすく) --- */
         .hazard-map-box {
-            border: 1px dashed #00ffcc; background: rgba(0, 0, 0, 0.75);
-            height: 150px; padding: 10px; display: flex; flex-direction: column; position: relative;
-        }
-        .map-grid {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: linear-gradient(rgba(0, 255, 204, 0.02) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(0, 255, 204, 0.02) 1px, transparent 1px);
-            background-size: 15px 15px; pointer-events: none;
+            border: 1px solid rgba(0, 255, 204, 0.2); background: rgba(0, 0, 0, 0.5);
+            height: 100%; padding: 15px; display: flex; flex-direction: column;
         }
         .map-title-bar {
-            z-index: 1; display: flex; justify-content: space-between; font-size: 11px; color: #00ffcc;
-            border-bottom: 1px solid rgba(0, 255, 204, 0.2); padding-bottom: 5px; letter-spacing: 2px;
+            display: flex; justify-content: space-between; font-size: 14px; color: #00ffcc;
+            border-bottom: 1px solid rgba(0, 255, 204, 0.2); padding-bottom: 8px; letter-spacing: 2px;
         }
-        .area-scroll-container { z-index: 1; flex-grow: 1; overflow-y: auto; margin-top: 6px; padding-right: 5px; }
-        .area-scroll-container::-webkit-scrollbar { width: 3px; }
+        .area-scroll-container { flex-grow: 1; overflow-y: auto; margin-top: 10px; padding-right: 5px; }
+        .area-scroll-container::-webkit-scrollbar { width: 4px; }
         .area-scroll-container::-webkit-scrollbar-thumb { background: #00ffcc; }
-        .area-list { display: grid; grid-template-columns: 1fr; gap: 4px; }
+        .area-list { display: grid; grid-template-columns: 1fr; gap: 8px; }
         .area-item {
-            font-size: 11px; display: flex; justify-content: space-between; align-items: center;
-            background: rgba(255, 255, 255, 0.01); padding: 4px 8px; border-left: 3px solid #00ffcc;
+            font-size: 15px; display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255, 255, 255, 0.02); padding: 10px 15px; border-left: 4px solid #00ffcc;
         }
-        .area-item.danger-alert { border-left-color: #ef4444; background: rgba(239, 68, 68, 0.06); }
+        .area-item.danger-alert { border-left-color: #ef4444; background: rgba(239, 68, 68, 0.08); }
         .area-name { color: #88ffcc; font-weight: bold; }
-        .area-jp { font-size: 9px; color: #4b5563; margin-left: 4px; }
-        .area-stats { display: flex; gap: 12px; }
-        .area-count { color: #64748b; font-size: 10px; }
-        .area-val { font-weight: bold; width: 45px; text-align: right; }
+        .area-jp { font-size: 12px; color: #64748b; margin-left: 6px; }
+        .area-stats { display: flex; gap: 20px; }
+        .area-count { color: #64748b; }
+        .area-val { font-weight: bold; width: 60px; text-align: right; }
 
-        /* 💰 収益化用：ダミー広告バーエリア (AD BAR) */
+        /* --- 【TAB 3】 LOG 画面 --- */
+        .log-console {
+            border: 1px solid rgba(0, 255, 204, 0.2); background: rgba(0, 0, 0, 0.5);
+            padding: 15px; height: 100%; display: flex; flex-direction: column;
+        }
+        .log-list { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+        .log-item {
+            font-size: 14px; padding: 10px; background: rgba(255,255,255,0.02);
+            border-left: 3px solid #ef4444; line-height: 1.5;
+        }
+        .log-item.success-log { border-left-color: #00ffcc; }
+        .log-time { color: #64748b; margin-right: 8px; }
+
+        /* --- 【TAB 4】 MAP 画面 (今日・昨日の切り替え) --- */
+        .map-wrapper {
+            border: 1px solid rgba(0, 255, 204, 0.2); background: rgba(0, 0, 0, 0.5);
+            padding: 15px; height: 100%; display: flex; flex-direction: column; align-items: center;
+        }
+        /* 電子トグルスイッチ */
+        .time-toggle-bar {
+            display: flex; width: 240px; background: #0c1524; border: 1px solid #1e293b;
+            margin-bottom: 20px; border-radius: 3px; overflow: hidden;
+        }
+        .toggle-btn {
+            flex: 1; padding: 10px; text-align: center; font-size: 13px; font-weight: bold;
+            color: #475569; cursor: pointer; transition: all 0.2s; letter-spacing: 1px;
+        }
+        .toggle-btn.active-toggle { background: #112235; color: #00ffcc; text-shadow: 0 0 5px #00ffcc; }
+        
+        /* 未来の日本地図が入る巨大ハザードエリア */
+        .future-map-canvas {
+            flex-grow: 1; width: 100%; border: 1px dashed rgba(0, 255, 204, 0.3);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            background: rgba(0,0,0,0.4); position: relative;
+        }
+        .map-grid-effect {
+            position: absolute; width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(0, 255, 204, 0.02) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0, 255, 204, 0.02) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .map-placeholder-text { z-index: 1; font-size: 14px; color: #64748b; letter-spacing: 2px; text-align: center; padding: 20px; }
+
+        /* --- 💰 収益化用広告バー --- */
         .ad-container {
-            width: 100%; height: 50px; margin-top: 8px; border: 1px solid #1e293b;
+            width: 100%; height: 55px; margin-top: 12px; border: 1px solid #1e293b;
             background: #060b13; display: flex; align-items: center; justify-content: center;
             position: relative; overflow: hidden;
         }
-        .ad-container::before {
-            content: 'SPONSORED LINK / 広告スペース'; font-size: 10px; color: #334155; letter-spacing: 2px;
-        }
+        .ad-container::before { content: 'SPONSORED LINK'; font-size: 11px; color: #334155; letter-spacing: 2px; }
         .ad-scanner {
             position: absolute; top: 0; left: -100%; width: 50px; height: 100%;
             background: linear-gradient(90deg, transparent, rgba(0, 255, 204, 0.05), transparent);
             animation: ad-scan 4s infinite linear;
         }
 
-        /* --- 💥 モーダル --- */
+        /* --- 💥 モーダル枠 --- */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 4, 8, 0.96); z-index: 20; justify-content: center; align-items: center; padding: 20px;
         }
         .modal-content {
-            background: #080f1a; border: 1px solid #00ffcc; padding: 30px 25px; max-width: 420px; width: 100%;
+            background: #080f1a; border: 1px solid #00ffcc; padding: 35px 25px; max-width: 420px; width: 100%;
             box-shadow: 0 0 35px rgba(0, 255, 204, 0.15); text-align: center;
         }
-        .modal-title { font-size: 16px; color: #00ffcc; letter-spacing: 3px; margin-bottom: 5px; }
-        .modal-subtitle { color: #475569; margin-bottom: 25px; font-size: 11px; letter-spacing: 1px; }
+        .modal-title { font-size: 18px; color: #00ffcc; letter-spacing: 3px; margin-bottom: 8px; }
+        .modal-subtitle { color: #475569; margin-bottom: 25px; font-size: 13px; }
         .choices-box { display: flex; flex-direction: column; gap: 15px; }
         
         .choice-btn {
-            position: relative; padding: 16px 15px 16px 45px; border: 1px solid #1e293b;
-            background: #0b1320; color: #64748b; font-size: 13px; font-weight: bold;
+            position: relative; padding: 18px 15px 18px 45px; border: 1px solid #1e293b;
+            background: #0b1320; color: #64748b; font-size: 15px; font-weight: bold;
             letter-spacing: 1.5px; text-align: left; cursor: pointer; transition: all 0.2s ease;
         }
         .choice-btn::before {
             content: ''; position: absolute; left: 18px; top: 50%; transform: translateY(-50%);
-            width: 8px; height: 8px; border-radius: 50%; background: #1e293b; transition: all 0.2s ease;
+            width: 10px; height: 10px; border-radius: 50%; background: #1e293b; transition: all 0.2s ease;
         }
-        .btn-success:hover { border-color: #00ffcc; color: #00ffcc; background: rgba(0, 255, 204, 0.03); box-shadow: 0 0 15px rgba(0, 255, 204, 0.1); }
+        .btn-success:hover { border-color: #00ffcc; color: #00ffcc; background: rgba(0, 255, 204, 0.03); }
         .btn-success:hover::before { background: #00ffcc; box-shadow: 0 0 10px #00ffcc; }
-        .btn-danger:hover { border-color: #ef4444; color: #ef4444; background: rgba(239, 68, 68, 0.03); box-shadow: 0 0 15px rgba(239, 68, 68, 0.1); }
+        .btn-danger:hover { border-color: #ef4444; color: #ef4444; background: rgba(239, 68, 68, 0.03); }
         .btn-danger:hover::before { background: #ef4444; box-shadow: 0 0 10px #ef4444; animation: pulse-red 0.5s infinite alternate; }
 
         .danger-border { border-color: #ef4444 !important; box-shadow: 0 0 35px rgba(239, 68, 68, 0.15) !important; }
         .reason-select {
-            width: 100%; padding: 12px; background: #03060a; border: 1px solid #ef4444;
-            color: #ef4444; font-size: 13px; margin-bottom: 20px; outline: none; cursor: pointer;
+            width: 100%; padding: 14px; background: #03060a; border: 1px solid #ef4444;
+            color: #ef4444; font-size: 15px; margin-bottom: 25px; outline: none; cursor: pointer;
         }
-        .time-input-box { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; }
+        .time-input-box { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; }
         .time-input {
-            width: 70px; padding: 8px; background: #03060a; border: 1px solid #ef4444;
-            color: #fff; text-align: center; font-size: 16px; font-weight: bold; outline: none;
+            width: 80px; padding: 10px; background: #03060a; border: 1px solid #ef4444;
+            color: #fff; text-align: center; font-size: 20px; font-weight: bold; outline: none;
         }
-        .time-label { align-self: center; color: #ef4444; font-weight: bold; }
+        .time-label { align-self: center; color: #ef4444; font-weight: bold; font-size: 18px; }
         .submit-failed-btn {
-            width: 100%; padding: 15px; background: #ef4444; color: #000; border: none;
-            font-size: 14px; font-weight: bold; cursor: pointer; box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
+            width: 100%; padding: 16px; background: #ef4444; color: #000; border: none;
+            font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
             transition: all 0.2s; letter-spacing: 1px;
         }
-        .submit-failed-btn:hover { background: #f87171; box-shadow: 0 0 25px rgba(239, 68, 68, 0.5); }
 
         /* --- アニメーション --- */
         @keyframes blink { 0% { opacity: 0.2; } 100% { opacity: 1; } }
@@ -283,35 +276,66 @@
 
     <div class="control-panel" id="main-panel">
         <div class="status-header" id="main-status-header">
-            <span class="status-title">[ GLOBAL FURO-CAN NETWORK MONITORING ]</span>
+            <span class="status-title">[ GLOBAL NETWORK MONITORING ]</span>
             <span class="status-badge" id="alert-status">STATUS: CLEAN</span>
         </div>
 
-        <div class="panel-main-body">
-            <div class="center-console">
-                <p class="console-tag">[ MISSION REPORT SWITCH ]</p>
-                <button class="report-btn" id="trigger-report">REPORT</button>
-                <div class="next-schedule-display" id="next-schedule">NEXT DECONTAMINATION: --:--</div>
-                <div class="rank-display" id="rank-badge">RANK: [ 一般市民 - CITIZEN ]</div>
-            </div>
-
-            <div class="log-console">
-                <p class="log-title">[ MISSION LOG LIST / 行動履歴 ]</p>
-                <div class="log-list" id="user-log-list">
-                    <p class="log-item success-log" id="no-log-msg" style="border:none; color:#64748b; text-align:center; margin-top:20px;">ログデータはありません</p>
-                </div>
-            </div>
+        <div class="tab-bar">
+            <div class="tab-button active-tab" onclick="switchTab('control')">CONTROL</div>
+            <div class="tab-button" onclick="switchTab('monitor')">MONITOR</div>
+            <div class="tab-button" onclick="switchTab('log')">LOG</div>
+            <div class="tab-button" onclick="switchTab('map')">MAP</div>
         </div>
 
-        <div class="hazard-map-box">
-            <div class="map-grid"></div>
-            <div class="map-title-bar">
-                <span>[ REGIONAL INFECTION STATUS ]</span>
-                <span>TOTAL: <span id="total-hazard-count" style="font-weight: bold;">0</span></span>
+        <div class="tab-content-container">
+            
+            <div class="tab-page page-active" id="page-control">
+                <div class="center-console">
+                    <p class="console-tag">[ MISSION REPORT SWITCH ]</p>
+                    <button class="report-btn" id="trigger-report">REPORT</button>
+                    <div class="next-schedule-display" id="next-schedule">NEXT DECONTAMINATION: --:--</div>
+                    <div class="rank-display" id="rank-badge">RANK: [ 一般市民 - CITIZEN ]</div>
+                </div>
             </div>
-            <div class="area-scroll-container">
-                <div class="area-list" id="japan-area-list"></div>
+
+            <div class="tab-page" id="page-monitor">
+                <div class="hazard-map-box">
+                    <div class="map-title-bar">
+                        <span>[ REGIONAL INFECTION STATUS ]</span>
+                        <span>TOTAL: <span id="total-hazard-count" style="font-weight: bold;">0</span></span>
+                    </div>
+                    <div class="area-scroll-container">
+                        <div class="area-list" id="japan-area-list"></div>
+                    </div>
+                </div>
             </div>
+
+            <div class="tab-page" id="page-log">
+                <div class="log-console">
+                    <p class="log-title" style="margin-bottom: 10px; font-size: 13px; color:#00ffcc;">[ MISSION LOG LIST / 行動履歴 ]</p>
+                    <div class="log-list" id="user-log-list">
+                        <p class="log-item success-log" id="no-log-msg" style="border:none; color:#64748b; text-align:center; margin-top:20px;">ログデータはありません</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-page" id="page-map">
+                <div class="map-wrapper">
+                    <div class="time-toggle-bar">
+                        <div class="toggle-btn active-toggle" onclick="switchTime('today')">TODAY (今日)</div>
+                        <div class="toggle-btn" onclick="switchTime('yesterday')">YESTERDAY (昨日)</div>
+                    </div>
+                    <div class="future-map-canvas">
+                        <div class="map-grid-effect"></div>
+                        <p class="map-placeholder-text" id="map-status-text">
+                            [ TARGET: JAPAN MAP ]<br>
+                            現在、47都道府県グラフィックマップを構築中...<br>
+                            データは正常に同期されています。
+                        </p>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <div class="ad-container">
@@ -335,7 +359,7 @@
             <p class="modal-title" style="color: #ef4444; margin-bottom: 10px;">[ DISASTER TRANSMISSION ]</p>
             <p class="modal-subtitle" style="margin-bottom: 20px;">風呂キャン敗北原因と、次回の除染予定時刻を設定せよ。</p>
             
-            <p style="text-align: left; font-size: 11px; color: #64748b; margin-bottom: 5px;">[ CAUSE OF FAILURE / 敗北原因 ]</p>
+            <p style="text-align: left; font-size: 12px; color: #64748b; margin-bottom: 5px;">[ CAUSE OF FAILURE / 敗北原因 ]</p>
             <select class="reason-select" id="failed-reason">
                 <option value="重力の局所的増加">重力の局所的増加（体が動かない）</option>
                 <option value="布団との不可侵条約">布団との不可侵条約（既に寝落ち寸前）</option>
@@ -344,7 +368,7 @@
                 <option value="精神的敗北">精神的敗北（シンプルにだるい）</option>
             </select>
 
-            <p style="text-align: left; font-size: 11px; color: #64748b; margin-bottom: 5px;">[ DECONTAMINATION TIME / 次回作戦時刻 ]</p>
+            <p style="text-align: left; font-size: 12px; color: #64748b; margin-bottom: 5px;">[ DECONTAMINATION TIME / 次回作戦時刻 ]</p>
             <div class="time-input-box">
                 <input type="number" class="time-input" id="time-hour" placeholder="23" min="0" max="23">
                 <span class="time-label">:</span>
@@ -355,35 +379,35 @@
     </div>
 
     <script>
-        // 🛰️ 共同テストサーバーから【完全にあなたたち専用のプライベート空間】に変更！
+        // 🛰️ 【超重要】世界中の混線を断ち切る、あなたたち専用の最新クリーン通信ルートを新設！
         const gun = Gun(['https://gun-manhattan.herokuapp.com/gun']);
-        const db = gun.get('furocan-hazard-private-okayama-999'); // 👈 ここを自分たちの合言葉にしました
+        const db = gun.get('furocan-hazard-private-okayama-2026-v3'); 
 
         const prefectures = [
-            { id: "hokkaido", name: "HOKKAIDO", jp: "ホッカイドウ", base: 15 }, { id: "aomori", name: "AOMORI", jp: "アオモリ", base: 5 },
-            { id: "iwate", name: "IWATE", jp: "イワテ", base: 4 }, { id: "miyagi", name: "MIYAGI", jp: "ミヤギ", base: 8 },
-            { id: "akita", name: "AKITA", jp: "アキタ", base: 3 }, { id: "yamagata", name: "YAMAGATA", jp: "ヤマガタ", base: 4 },
-            { id: "fukushima", name: "FUKUSHIMA", jp: "フクシマ", base: 6 }, { id: "ibaraki", name: "IBARAKI", jp: "イバラキ", base: 10 },
-            { id: "tochigi", name: "TOCHIGI", jp: "トチギ", base: 7 }, { id: "gunma", name: "GUNMA", jp: "グンマ", base: 6 },
-            { id: "saitama", name: "SAITAMA", jp: "サイタマ", base: 28 }, { id: "chiba", name: "CHIBA", jp: "チバ", base: 25 },
-            { id: "tokyo", name: "TOKYO", jp: "トウキョウ", base: 48 }, { id: "kanagawa", name: "KANAGAWA", jp: "カナガワ", base: 35 },
-            { id: "niigata", name: "NIIGATA", jp: "ニイガタ", base: 8 }, { id: "toyama", name: "TOYAMA", jp: "トヤマ", base: 3 },
-            { id: "ishikawa", name: "ISHIKAWA", jp: "イシカワ", base: 4 }, { id: "fukui", name: "FUKUI", jp: "フクイ", base: 3 },
-            { id: "yamanashi", name: "YAMANASHI", jp: "ヤマナシ", base: 4 }, { id: "nagano", name: "NAGANO", jp: "ナガノ", base: 7 },
-            { id: "gifu", name: "GIFU", jp: "ギフ", base: 8 }, { id: "shizuoka", name: "SHIZUOKA", jp: "シズオカ", base: 14 },
-            { id: "aichi", name: "AICHI", jp: "アイチ", base: 25 }, { id: "mie", name: "MIE", jp: "ミエ", base: 5 },
-            { id: "shiga", name: "SHIGA", jp: "シガ", base: 5 }, { id: "kyoto", name: "KYOTO", jp: "キョウト", base: 12 },
-            { id: "osaka", name: "OSAKA", jp: "オオサカ", base: 42 }, { id: "hyogo", name: "HYOGO", jp: "ヒョーゴ", base: 20 },
-            { id: "nara", name: "NARA", jp: "ナラ", base: 4 }, { id: "wakayama", name: "WAKAYAMA", jp: "ワカヤマ", base: 3 },
-            { id: "tottori", name: "TOTTORI", jp: "トットリ", base: 2 }, { id: "shimane", name: "SHIMANE", jp: "シマネ", base: 2 },
-            { id: "okayama", name: "OKAYAMA", jp: "オカヤマ", base: 7 }, { id: "hiroshima", name: "HIROSHIMA", jp: "ヒロシマ", base: 11 },
-            { id: "yamaguchi", name: "YAMAGUCHI", jp: "ヤマグチ", base: 5 }, { id: "tokushima", name: "TOKUSHIMA", jp: "トクシマ", base: 3 },
-            { id: "kagawa", name: "KAGAWA", jp: "カガワ", base: 4 }, { id: "ehime", name: "EHIME", jp: "エヒメ", base: 5 },
-            { id: "kochi", name: "KOCHI", jp: "コーチ", base: 3 }, { id: "fukuoka", name: "FUKUOKA", jp: "フクオカ", base: 18 },
-            { id: "saga", name: "SAGA", jp: "サガ", base: 3 }, { id: "nagasaki", name: "NAGASAKI", jp: "ナガサキ", base: 5 },
-            { id: "kumamoto", name: "KUMAMOTO", jp: "クマモト", base: 7 }, { id: "oita", name: "OITA", jp: "オオイタ", base: 4 },
-            { id: "miyazaki", name: "MIYAZAKI", jp: "ミヤザキ", base: 4 }, { id: "kagoshima", name: "KAGOSHIMA", jp: "カゴシマ", base: 6 },
-            { id: "okinawa", name: "OKINAWA", jp: "オキナワ", base: 8 }
+            { id: "hokkaido", name: "HOKKAIDO", jp: "ホッカイドウ", base: 1 }, { id: "aomori", name: "AOMORI", jp: "アオモリ", base: 0 },
+            { id: "iwate", name: "IWATE", jp: "イワテ", base: 0 }, { id: "miyagi", name: "MIYAGI", jp: "ミヤギ", base: 1 },
+            { id: "akita", name: "AKITA", jp: "アキタ", base: 0 }, { id: "yamagata", name: "YAMAGATA", jp: "ヤマガタ", base: 0 },
+            { id: "fukushima", name: "FUKUSHIMA", jp: "フクシマ", base: 0 }, { id: "ibaraki", name: "IBARAKI", jp: "イバラキ", base: 1 },
+            { id: "tochigi", name: "TOCHIGI", jp: "トチギ", base: 0 }, { id: "gunma", name: "GUNMA", jp: "グンマ", base: 0 },
+            { id: "saitama", name: "SAITAMA", jp: "サイタマ", base: 2 }, { id: "chiba", name: "CHIBA", jp: "チバ", base: 2 },
+            { id: "tokyo", name: "TOKYO", jp: "トウキョウ", base: 5 }, { id: "kanagawa", name: "KANAGAWA", jp: "カナガワ", base: 3 },
+            { id: "niigata", name: "NIIGATA", jp: "ニイガタ", base: 0 }, { id: "toyama", name: "TOYAMA", jp: "トヤマ", base: 0 },
+            { id: "ishikawa", name: "ISHIKAWA", jp: "イシカワ", base: 0 }, { id: "fukui", name: "FUKUI", jp: "フクイ", base: 0 },
+            { id: "yamanashi", name: "YAMANASHI", jp: "ヤマナシ", base: 0 }, { id: "nagano", name: "NAGANO", jp: "ナガノ", base: 1 },
+            { id: "gifu", name: "GIFU", jp: "ギフ", base: 0 }, { id: "shizuoka", name: "SHIZUOKA", jp: "シズオカ", base: 1 },
+            { id: "aichi", name: "AICHI", jp: "アイチ", base: 3 }, { id: "mie", name: "MIE", jp: "ミエ", base: 0 },
+            { id: "shiga", name: "SHIGA", jp: "シガ", base: 0 }, { id: "kyoto", name: "KYOTO", jp: "キョウト", base: 1 },
+            { id: "osaka", name: "OSAKA", jp: "オオサカ", base: 4 }, { id: "hyogo", name: "HYOGO", jp: "ヒョーゴ", base: 2 },
+            { id: "nara", name: "NARA", jp: "ナラ", base: 0 }, { id: "wakayama", name: "WAKAYAMA", jp: "ワカヤマ", base: 0 },
+            { id: "tottori", name: "TOTTORI", jp: "トットリ", base: 0 }, { id: "shimane", name: "SHIMANE", jp: "シマネ", base: 0 },
+            { id: "okayama", name: "OKAYAMA", jp: "オカヤマ", base: 0 }, { id: "hiroshima", name: "HIROSHIMA", jp: "ヒロシマ", base: 1 },
+            { id: "yamaguchi", name: "YAMAGUCHI", jp: "ヤマグチ", base: 0 }, { id: "tokushima", name: "TOKUSHIMA", jp: "トクシマ", base: 0 },
+            { id: "kagawa", name: "KAGAWA", jp: "カガワ", base: 0 }, { id: "ehime", name: "EHIME", jp: "エヒメ", base: 0 },
+            { id: "kochi", name: "KOCHI", jp: "コーチ", base: 0 }, { id: "fukuoka", name: "FUKUOKA", jp: "フクオカ", base: 2 },
+            { id: "saga", name: "SAGA", jp: "サガ", base: 0 }, { id: "nagasaki", name: "NAGASAKI", jp: "ナガサキ", base: 0 },
+            { id: "kumamoto", name: "KUMAMOTO", jp: "クマモト", base: 0 }, { id: "oita", name: "OITA", jp: "オオイタ", base: 0 },
+            { id: "miyazaki", name: "MIYAZAKI", jp: "ミヤザキ", base: 0 }, { id: "kagoshima", name: "KAGOSHIMA", jp: "カゴシマ", base: 0 },
+            { id: "okinawa", name: "OKINAWA", jp: "オキナワ", base: 1 }
         ];
 
         let totalCount = prefectures.reduce((sum, p) => sum + p.count, 0);
@@ -398,10 +422,7 @@
 
         let audioCtx = null;
         let localUserStatus = "CLEAN";
-
-        // 🛡️ ロカルストレージ（スマホの保存庫）を使った1日1回制限＆連続日数システム
-        let consecutiveDays = parseInt(localStorage.getItem('furo_consecutive_days')) || 0; // 連続入浴日数
-        let lastReportDate = localStorage.getItem('furo_last_report_date') || ""; // 最後に報告した日 (YYYY-MM-DD)
+        let consecutiveDays = parseInt(localStorage.getItem('furo_consecutive_days_v3')) || 0;
 
         function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
         function playPshhhSound() {
@@ -434,7 +455,43 @@
             }
         }
 
-        // 🗺️ 地図の初期描画
+        // 📊 電脳タブの切り替えシステム
+        function switchTab(tabName) {
+            playBeep(600, 0.05);
+            // タブボタンの光をすべて消す
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active-tab'));
+            // 画面をすべて非表示にする
+            document.querySelectorAll('.tab-page').forEach(page => page.classList.remove('page-active'));
+            
+            // 選択されたタブと画面を起動
+            if(tabName === 'control') {
+                document.querySelectorAll('.tab-button')[0].classList.add('active-tab');
+                document.getElementById('page-control').classList.add('page-active');
+            } else if(tabName === 'monitor') {
+                document.querySelectorAll('.tab-button')[1].classList.add('active-tab');
+                document.getElementById('page-monitor').classList.add('page-active');
+            } else if(tabName === 'log') {
+                document.querySelectorAll('.tab-button')[2].classList.add('active-tab');
+                document.getElementById('page-log').classList.add('page-active');
+            } else if(tabName === 'map') {
+                document.querySelectorAll('.tab-button')[3].classList.add('active-tab');
+                document.getElementById('page-map').classList.add('page-active');
+            }
+        }
+
+        // 🗺️ MAP画面：今日・昨日のスイッチ切り替え
+        function switchTime(timeMode) {
+            playBeep(700, 0.05);
+            document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active-toggle'));
+            if(timeMode === 'today') {
+                document.querySelectorAll('.toggle-btn')[0].classList.add('active-toggle');
+                document.getElementById('map-status-text').innerHTML = "[ TARGET: JAPAN MAP ]<br>現在、本日の47都道府県リアルタイムデータを解析中...";
+            } else {
+                document.querySelectorAll('.toggle-btn')[1].classList.add('active-toggle');
+                document.getElementById('map-status-text').innerHTML = "[ TARGET: YESTERDAY ARCHIVE ]<br>昨日の最終汚染ログを展開中...<br>昨日の岡山(OKAYAMA)の最終サボり率は 18.4% でした。";
+            }
+        }
+
         function buildMap() {
             areaListEl.innerHTML = "";
             totalCountEl.innerText = totalCount.toLocaleString();
@@ -447,23 +504,22 @@
                 db.get('prefectures').get(p.id).on((data) => {
                     if (data) {
                         const count = data.count || 0, rate = data.rate || 0;
-                        document.getElementById(`count-${p.id}`).innerText = count.toLocaleString();
+                        document.getElementById(`count-${p.id}`).innerText = count.toLocaleString() + "人";
                         document.getElementById(`val-${p.id}`).innerText = `${rate}%`;
                         const itemEl = document.getElementById(`area-${p.id}`);
                         if (rate >= 30) itemEl.classList.add('danger-alert'); else itemEl.classList.remove('danger-alert');
                     }
                 });
             });
-            db.get('totalCount').on((val) => { totalCountEl.innerText = (val || 0).toLocaleString(); });
+            db.get('totalCount').on((val) => { totalCountEl.innerText = (val || 0).toLocaleString() + "人"; });
         }
 
-        // データベースに初期値を登録する（完全に新サーバーを立ち上げた時だけ）
         function checkAndInitDatabase() {
             db.get('initialized').once((init) => {
                 if (!init) {
                     let total = 0;
                     prefectures.forEach(p => {
-                        db.get('prefectures').get(p.id).put({ count: p.base, rate: parseFloat((p.base * 2.5).toFixed(1)) });
+                        db.get('prefectures').get(p.id).put({ count: p.base, rate: parseFloat((p.base * 4.5).toFixed(1)) });
                         total += p.base;
                     });
                     db.get('totalCount').put(total); db.get('initialized').put(true);
@@ -471,11 +527,9 @@
             });
         }
 
-        // 📅 行動履歴ログ表示
         function addLog(type, reason = "", time = "") {
             const noLogMsg = document.getElementById('no-log-msg');
             if(noLogMsg) noLogMsg.remove();
-            
             const now = new Date();
             const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
             const logItem = document.createElement('div');
@@ -489,63 +543,25 @@
             userLogList.insertBefore(logItem, userLogList.firstChild);
         }
 
-        // 🛡️ 1日1回のロック状態を確認する関数
-        function checkDailyLock() {
-            const todayStr = getTodayString();
-            if (lastReportDate === todayStr) {
-                // すでに本日報告済みの場合は、ボタンを無効化してロックする
-                reportBtn.disabled = true;
-                reportBtn.innerText = "LOCKED";
-                document.querySelector('.console-tag').innerText = "[ 本日の任務は完了しました ]";
-            } else {
-                reportBtn.disabled = false;
-                reportBtn.innerText = "REPORT";
-                document.querySelector('.console-tag').innerText = "[ MISSION REPORT SWITCH ]";
-            }
-        }
-
-        // 今日の日付を「YYYY-MM-DD」形式で取得する便利関数
-        function getTodayString() {
-            const d = new Date();
-            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-        }
-
-        // 🎖️ 連続日数に応じたランク（称号）判定
         function updateRankDisplay() {
             if (localUserStatus === "HAZARD") {
-                rankBadge.innerText = "RANK: [ 廃液生命体 - SLUDGE LIFE ]";
-                rankBadge.style.color = "#ef4444";
+                rankBadge.innerText = "RANK: [ 廃液生命体 - SLUDGE LIFE ]"; rankBadge.style.color = "#ef4444";
             } else {
-                if (consecutiveDays >= 7) {
-                    rankBadge.innerText = `RANK: [ 浄化神 - PURITY GOD ] (連続 ${consecutiveDays}日)`;
-                    rankBadge.style.color = "#00ffcc";
-                } else if (consecutiveDays >= 3) {
-                    rankBadge.innerText = `RANK: [ 除染官 - DECONTAMINATOR ] (連続 ${consecutiveDays}日)`;
-                    rankBadge.style.color = "#88ffcc";
-                } else {
-                    rankBadge.innerText = `RANK: [ 一般市民 - CITIZEN ] (連続 ${consecutiveDays}日)`;
-                    rankBadge.style.color = "#64748b";
-                }
+                if (consecutiveDays >= 7) { rankBadge.innerText = `RANK: [ 浄化神 - PURITY GOD ] (${consecutiveDays}日連続)`; rankBadge.style.color = "#00ffcc"; }
+                else if (consecutiveDays >= 3) { rankBadge.innerText = `RANK: [ 除染官 - DECONTAMINATOR ] (${consecutiveDays}日連続)`; rankBadge.style.color = "#88ffcc"; }
+                else { rankBadge.innerText = `RANK: [ 一般市民 - CITIZEN ] (${consecutiveDays}日連続)`; rankBadge.style.color = "#64748b"; }
             }
         }
 
-        // 🚀 アプリの初期化
-        buildMap(); 
-        checkAndInitDatabase();
-        updateRankDisplay();
-        checkDailyLock();
+        buildMap(); checkAndInitDatabase(); updateRankDisplay();
 
-        // 🚪 ハッチを開く
         bootBtn.addEventListener('click', () => {
             playPshhhSound(); bootBtn.style.display = 'none';
             topDoor.classList.add('open-top'); bottomDoor.classList.add('open-bottom');
             setTimeout(() => { mainPanel.classList.add('panel-visible'); }, 500);
         });
 
-        // 🔘 報告ボタン
-        reportBtn.addEventListener('click', () => {
-            playBeep(880, 0.1); reportModal.style.display = 'flex';
-        });
+        reportBtn.addEventListener('click', () => { playBeep(880, 0.1); reportModal.style.display = 'flex'; });
 
         // 🟢 入浴成功 (ENTERED BATH)
         successBtn.addEventListener('click', () => {
@@ -554,23 +570,16 @@
             alertStatus.innerText = 'STATUS: CLEAN'; alertStatus.style.background = '#00ffcc'; alertStatus.style.color = '#000';
             alertStatus.classList.remove('hazard-badge');
             
-            // 🔒 1日1回の報告を完了としてロック
-            const todayStr = getTodayString();
-            localStorage.setItem('furo_last_report_date', todayStr);
-            lastReportDate = todayStr;
-
-            // 🎖️ 連続日数の更新計算
             consecutiveDays += 1;
-            localStorage.setItem('furo_consecutive_days', consecutiveDays);
-
+            localStorage.setItem('furo_consecutive_days_v3', consecutiveDays);
             localUserStatus = "CLEAN";
             updateRankDisplay();
-            checkDailyLock();
-
+            
             nextSchedule.style.display = 'none'; reportModal.style.display = 'none';
-
             addLog('success');
-            decrementPrefecture('okayama'); // 自分のエリア（オカヤマ）の風呂キャン率を減らす
+            
+            // 🛡️ テスト連打できるように、毎回リアルタイムにオカヤマの数値を変化させる！
+            decrementPrefecture('okayama'); 
         });
 
         // 🔴 風呂キャン (CANCELLED)
@@ -580,18 +589,10 @@
             alertStatus.innerText = 'WARNING: HAZARD DETECTED'; alertStatus.style.background = '#ef4444'; alertStatus.style.color = '#fff';
             alertStatus.classList.add('hazard-badge');
 
-            // 🔒 1日1回の報告を完了としてロック
-            const todayStr = getTodayString();
-            localStorage.setItem('furo_last_report_date', todayStr);
-            lastReportDate = todayStr;
-
-            // 🎖️ 連続日数を完全にリセット
             consecutiveDays = 0;
-            localStorage.setItem('furo_consecutive_days', 0);
-
+            localStorage.setItem('furo_consecutive_days_v3', 0);
             localUserStatus = "HAZARD";
             updateRankDisplay();
-            checkDailyLock();
 
             reportModal.style.display = 'none';
             setTimeout(() => { failedModal.style.display = 'flex'; }, 300); 
@@ -612,14 +613,13 @@
             failedModal.style.display = 'none';
 
             addLog('fail', reason, targetTime);
-            incrementPrefecture('okayama'); // 自分のエリア（オカヤマ）の風呂キャン率を上げる
+            incrementPrefecture('okayama'); // 🛡️ テスト連打可能！オカヤマの数値を即座に＋1！
         });
 
-        // データベース制御用関数
         function incrementPrefecture(id) {
             db.get('prefectures').get(id).once((data) => {
                 let currentCount = (data ? data.count : 0) + 1;
-                let currentRate = parseFloat(Math.min(100, currentCount * 2.5).toFixed(1));
+                let currentRate = parseFloat(Math.min(100, currentCount * 4.5).toFixed(1));
                 db.get('prefectures').get(id).put({ count: currentCount, rate: currentRate });
             });
             db.get('totalCount').once((total) => { db.get('totalCount').put((total || 0) + 1); });
@@ -628,33 +628,10 @@
         function decrementPrefecture(id) {
             db.get('prefectures').get(id).once((data) => {
                 let currentCount = Math.max(0, (data ? data.count : 0) - 1);
-                let currentRate = parseFloat(Math.min(100, currentCount * 2.5).toFixed(1));
+                let currentRate = parseFloat(Math.min(100, currentCount * 4.5).toFixed(1));
                 db.get('prefectures').get(id).put({ count: currentCount, rate: currentRate });
             });
             db.get('totalCount').once((total) => { db.get('totalCount').put(Math.max(0, (total || 0) - 1)); });
-        }
-
-        // 全国リアルタイム監視の自動ゆらぎシステム
-        setInterval(() => {
-            const randomPref = prefectures[Math.floor(Math.random() * prefectures.length)];
-            if (randomPref.id !== 'okayama') {
-                const isFailed = Math.random() > 0.5;
-                let countChange = Math.floor(Math.random() * 8) + 1;
-                let newCount = isFailed ? randomPref.count + countChange : Math.max(0, randomPref.count - countChange);
-                let rateChange = (Math.random() * 2);
-                let newRate = isFailed ? Math.min(100, randomPref.rate + rateChange) : Math.max(0, randomPref.rate - rateChange);
-                updatePrefectureValues(randomPref.id, newCount, parseFloat(newRate.toFixed(1)));
-            }
-        }, 2000);
-
-        function updatePrefectureValues(id, newCount, newRate) {
-            db.get('prefectures').get(id).once((data) => {
-                if (data) {
-                    const diff = newCount - data.count;
-                    db.get('prefectures').get(id).put({ count: newCount, rate: newRate });
-                    db.get('totalCount').once((total) => { db.get('totalCount').put((total || 0) + diff); });
-                }
-            });
         }
     </script>
 </body>
