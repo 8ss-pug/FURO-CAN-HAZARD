@@ -62,7 +62,7 @@
             border: 1px solid #00ffcc; padding: 10px 15px;
             background: rgba(0, 255, 204, 0.05);
             display: flex; justify-content: space-between; align-items: center;
-            cursor: pointer; /* ヘッダーをタップしてホーム(CONTROL)に戻る */
+            cursor: pointer;
         }
         .status-header.hazard-alert-border { border-color: #ef4444; background: rgba(239, 68, 68, 0.1); }
         .status-title { font-size: 13px; letter-spacing: 2px; color: #00ffcc; }
@@ -116,7 +116,6 @@
         .report-btn.decontaminate-mode { border-color: #ef4444; color: #ef4444; font-size: 20px; }
         .report-btn.decontaminate-mode::before { border-color: rgba(239, 68, 68, 0.4); }
         
-        /* SNSシェア用報告書発行ボタン */
         .share-trigger-btn {
             margin-top: 15px; padding: 8px 16px; background: transparent; border: 1px solid #00ffcc;
             color: #00ffcc; font-size: 12px; font-weight: bold; cursor: pointer; letter-spacing: 1px;
@@ -168,14 +167,14 @@
         .log-item.success-log { border-left-color: #00ffcc; }
         .log-time { color: #64748b; margin-right: 8px; }
 
-        /* 【TAB 4】 MAP 画面 (スタイリッシュ・カクカク日本地図) */
+        /* 【TAB 4】 MAP 画面 (日本列島完全再現グリッド) */
         .map-wrapper {
             border: 1px solid rgba(0, 255, 204, 0.2); background: rgba(0, 0, 0, 0.5);
             padding: 15px; height: 100%; display: flex; flex-direction: column; align-items: center;
         }
         .time-toggle-bar {
             display: flex; width: 240px; background: #0c1524; border: 1px solid #1e293b;
-            margin-bottom: 15px; border-radius: 3px; overflow: hidden;
+            margin-bottom: 10px; border-radius: 3px; overflow: hidden;
         }
         .toggle-btn {
             flex: 1; padding: 10px; text-align: center; font-size: 13px; font-weight: bold;
@@ -185,20 +184,21 @@
         .future-map-canvas {
             flex-grow: 1; width: 100%; border: 1px dashed rgba(0, 255, 204, 0.2);
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            background: rgba(0,0,0,0.6); position: relative; padding: 10px;
+            background: rgba(0,0,0,0.6); position: relative; padding: 5px;
+            overflow: auto;
         }
         
+        /* 🗺️ 美しく並ぶ12x11セクターの日本列島グリッド */
         .cyber-grid-map {
-            display: grid; grid-template-columns: repeat(12, 22px); grid-template-rows: repeat(10, 22px);
-            gap: 2px; justify-content: center; margin-top: 10px;
+            display: grid; grid-template-columns: repeat(12, 23px); grid-template-rows: repeat(11, 23px);
+            gap: 2px; justify-content: center; margin: auto;
         }
         .map-node {
-            background: rgba(30, 41, 59, 0.3); border: 1px solid rgba(255,255,255,0.03);
-            font-size: 9px; display: flex; align-items: center; justify-content: center;
-            color: #243242; font-weight: bold; transition: all 0.4s;
+            background: transparent; font-size: 8px; display: flex; align-items: center; justify-content: center;
+            color: transparent; font-weight: bold; transition: all 0.4s; border-radius: 2px;
         }
-        .map-node.active-island { background: #0b2136; color: #00b38f; border-color: rgba(0, 255, 204, 0.15); }
-        .map-node.node-blue { background: #072b47 !important; color: #00ffcc !important; border-color: #00ffcc !important; }
+        .map-node.active-island { background: #091a2e; color: #00a383; border: 1px solid rgba(0, 255, 204, 0.15); }
+        .map-node.node-blue { background: #06253f !important; color: #00ffcc !important; border-color: #00ffcc !important; }
         .map-node.node-yellow { background: #3d3507 !important; color: #eab308 !important; border-color: #eab308 !important; }
         .map-node.node-red-flash {
             background: #450a0a !important; color: #ef4444 !important; border-color: #ef4444 !important;
@@ -254,7 +254,6 @@
         .select-cyber {
             width: 100%; padding: 12px; background: #03060a; border: 1px solid #00ffcc; color: #00ffcc; font-size: 15px; margin-bottom: 20px; outline: none;
         }
-
         .danger-border { border-color: #ef4444 !important; box-shadow: 0 0 35px rgba(239, 68, 68, 0.15) !important; }
         .time-input-box { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; }
         .time-input {
@@ -267,10 +266,9 @@
             width: 100%; padding: 16px; background: #00ffcc; color: #000; border: none; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
         }
         
-        /* 🔒 ご指定通りSEND PROTOCOLの下の段に綺麗に改行して配置 */
         .submit-failed-container {
             width: 100%; background: #ef4444; padding: 12px 10px; cursor: pointer; border: none;
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); text-align: center; transition: all 0.2s;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); text-align: center; transition: all 0.2s; display: block;
         }
         .submit-failed-container:hover { background: #f87171; }
         .submit-failed-container .line1 { font-family: 'Share Tech Mono', sans-serif; font-size: 15px; font-weight: bold; color: #000; letter-spacing: 2px; }
@@ -462,35 +460,59 @@
     </div>
 
     <script>
-        // 🛰️ あなたたち専用のプライベート通信サーバーノード(v6)
+        // 🛰️ あなたたち専用のプライベート通信サーバーノード(v7)
         const gun = Gun(['https://gun-manhattan.herokuapp.com/gun']);
-        const db = gun.get('furocan-hazard-private-okayama-2026-v6'); 
+        const db = gun.get('furocan-hazard-private-okayama-2026-v7'); 
 
+        // 🗺️ 日本地図の形状を12x11マスの中に完璧に配置換え（y=0が一番上、y=10が一番下）
         const prefectures = [
-            { id: "hokkaido", name: "HKD", jp: "北海道", base: 1, x:9, y:1 }, { id: "aomori", name: "AOM", jp: "青森", base: 0, x:8, y:2 },
-            { id: "iwate", name: "IWT", jp: "岩手", base: 0, x:9, y:3 }, { id: "miyagi", name: "MYG", jp: "宮城", base: 1, x:8, y:3 },
-            { id: "akita", name: "AKT", jp: "秋田", base: 0, x:7, y:3 }, { id: "yamagata", name: "YMG", jp: "山形", base: 0, x:7, y:4 },
-            { id: "fukushima", name: "FKS", jp: "福島", base: 0, x:8, y:4 }, { id: "ibaraki", name: "IBR", jp: "茨城", base: 1, x:8, y:5 },
-            { id: "tochigi", name: "TCG", jp: "栃木", base: 0, x:7, y:5 }, { id: "gunma", name: "GNM", jp: "群馬", base: 0, x:6, y:5 },
-            { id: "saitama", name: "STM", jp: "埼玉", base: 2, x:6, y:6 }, { id: "chiba", name: "CHB", jp: "千葉", base: 2, x:7, y:6 },
-            { id: "tokyo", name: "TYO", jp: "東京", base: 5, x:7, y:7 }, { id: "kanagawa", name: "KNG", jp: "神奈川", base: 3, x:6, y:7 },
-            { id: "niigata", name: "NGT", jp: "新潟", base: 0, x:6, y:4 }, { id: "toyama", name: "TYM", jp: "富山", base: 0, x:5, y:4 },
-            { id: "ishikawa", name: "ISK", jp: "石川", base: 0, x:4, y:4 }, { id: "fukui", name: "FKI", jp: "福井", base: 0, x:4, y:5 },
-            { id: "yamanashi", name: "YMN", jp: "山梨", base: 0, x:5, y:6 }, { id: "nagano", name: "NGN", jp: "長野", base: 1, x:5, y:5 },
-            { id: "gifu", name: "GIF", jp: "岐阜", base: 0, x:5, y:7 }, { id: "shizuoka", name: "SZO", jp: "静岡", base: 1, x:6, y:8 },
-            { id: "aichi", name: "AIC", jp: "愛知", base: 3, x:5, y:8 }, { id: "mie", name: "MIE", jp: "三重", base: 0, x:4, y:8 },
-            { id: "shiga", name: "SHG", jp: "滋賀", base: 0, x:4, y:6 }, { id: "kyoto", name: "KYT", jp: "京都", base: 1, x:3, y:6 },
-            { id: "osaka", name: "OSK", jp: "大阪", base: 4, x:3, y:7 }, { id: "hyogo", name: "HYG", jp: "兵庫", base: 2, x:2, y:6 },
-            { id: "nara", name: "NAR", jp: "奈良", base: 0, x:4, y:7 }, { id: "wakayama", name: "WKY", jp: "和歌山", base: 0, x:3, y:8 },
-            { id: "tottori", name: "TTR", jp: "鳥取", base: 0, x:2, y:5 }, { id: "shimane", name: "SMN", jp: "島根", base: 0, x:1, y:5 },
-            { id: "okayama", name: "OKY", jp: "岡山", base: 0, x:2, y:7 }, { id: "hiroshima", name: "HRS", jp: "広島", base: 1, x:1, y:7 },
-            { id: "yamaguchi", name: "YMG", jp: "山口", base: 0, x:0, y:7 }, { id: "tokushima", name: "TKS", jp: "徳島", base: 0, x:2, y:9 },
-            { id: "kagawa", name: "KGW", jp: "香川", base: 0, x:2, y:8 }, { id: "ehime", name: "EHM", jp: "愛媛", base: 0, x:1, y:8 },
-            { id: "kochi", name: "KCH", jp: "高知", base: 0, x:1, y:9 }, { id: "fukuoka", name: "FUK", jp: "福岡", base: 2, x:0, y:5 },
-            { id: "saga", name: "SAG", jp: "佐賀", base: 0, x:0, y:4 }, { id: "nagasaki", name: "NGS", jp: "長崎", base: 0, x:0, y:3 },
-            { id: "kumamoto", name: "KMM", jp: "熊本", base: 0, x:0, y:6 }, { id: "oita", name: "OIT", jp: "大分", base: 0, x:1, y:6 },
-            { id: "miyazaki", name: "MYZ", jp: "宮崎", base: 0, x:1, y:4 }, { id: "kagoshima", name: "KGS", jp: "鹿児島", base: 0, x:0, y:2 },
-            { id: "okinawa", name: "OKA", jp: "沖縄", base: 1, x:0, y:0 }
+            { id: "hokkaido", name: "HKD", jp: "北海道", base: 1, x:11, y:0 }, 
+            { id: "aomori", name: "AOM", jp: "青森", base: 0, x:9, y:2 },
+            { id: "akita", name: "AKT", jp: "秋田", base: 0, x:8, y:3 }, 
+            { id: "iwate", name: "IWT", jp: "岩手", base: 0, x:9, y:3 }, 
+            { id: "yamagata", name: "YMG", jp: "山形", base: 0, x:8, y:4 }, 
+            { id: "miyagi", name: "MYG", jp: "宮城", base: 1, x:9, y:4 },
+            { id: "niigata", name: "NGT", jp: "新潟", base: 0, x:7, y:5 }, 
+            { id: "fukushima", name: "FKS", jp: "福島", base: 0, x:8, y:5 }, 
+            { id: "ibaraki", name: "IBR", jp: "茨城", base: 1, x:9, y:6 },
+            { id: "toyama", name: "TYM", jp: "富山", base: 0, x:6, y:5 }, 
+            { id: "nagano", name: "NGN", jp: "長野", base: 1, x:6, y:6 }, 
+            { id: "gunma", name: "GNM", jp: "群馬", base: 0, x:7, y:6 },
+            { id: "tochigi", name: "TCG", jp: "栃木", base: 0, x:8, y:6 }, 
+            { id: "chiba", name: "CHB", jp: "千葉", base: 2, x:9, y:7 },
+            { id: "ishikawa", name: "ISK", jp: "石川", base: 0, x:5, y:5 }, 
+            { id: "fukui", name: "FKI", jp: "福井", base: 0, x:5, y:6 }, 
+            { id: "gifu", name: "GIF", jp: "岐阜", base: 0, x:5, y:7 },
+            { id: "yamanashi", name: "YMN", jp: "山梨", base: 0, x:7, y:7 }, 
+            { id: "saitama", name: "STM", jp: "埼玉", base: 2, x:8, y:7 },
+            { id: "kyoto", name: "KYT", jp: "京都", base: 1, x:4, y:6 }, 
+            { id: "shiga", name: "SHG", jp: "滋賀", base: 0, x:4, y:7 }, 
+            { id: "aichi", name: "AIC", jp: "愛知", base: 3, x:6, y:8 },
+            { id: "shizuoka", name: "SZO", jp: "静岡", base: 1, x:7, y:8 }, 
+            { id: "tokyo", name: "TYO", jp: "東京", base: 5, x:8, y:8 },
+            { id: "hyogo", name: "HYG", jp: "兵庫", base: 2, x:3, y:6 }, 
+            { id: "osaka", name: "OSK", jp: "大阪", base: 4, x:4, y:8 }, 
+            { id: "mie", name: "MIE", jp: "三重", base: 0, x:5, y:8 },
+            { id: "kanagawa", name: "KNG", jp: "神奈川", base: 3, x:8, y:9 },
+            { id: "tottori", name: "TTR", jp: "鳥取", base: 0, x:2, y:6 }, 
+            { id: "shimane", name: "SMN", jp: "島根", base: 0, x:1, y:6 }, 
+            { id: "nara", name: "NAR", jp: "奈良", base: 0, x:4, y:9 },
+            { id: "okayama", name: "OKY", jp: "岡山", base: 0, x:2, y:7 }, 
+            { id: "hiroshima", name: "HRS", jp: "広島", base: 1, x:1, y:7 }, 
+            { id: "wakayama", name: "WKY", jp: "和歌山", base: 0, x:3, y:9 },
+            { id: "yamaguchi", name: "YMG", jp: "山口", base: 0, x:0, y:7 }, 
+            { id: "kagawa", name: "KGW", jp: "香川", base: 0, x:2, y:8 }, 
+            { id: "ehime", name: "EHM", jp: "愛媛", base: 0, x:1, y:8 },
+            { id: "tokushima", name: "TKS", jp: "徳島", base: 0, x:3, y:8 }, 
+            { id: "kochi", name: "KCH", jp: "高知", base: 0, x:2, y:9 },
+            { id: "fukuoka", name: "FUK", jp: "福岡", base: 2, x:1, y:10 }, 
+            { id: "oita", name: "OIT", jp: "大分", base: 0, x:2, y:10 },
+            { id: "saga", name: "SAG", jp: "佐賀", base: 0, x:0, y:10 }, 
+            { id: "kumamoto", name: "KMM", jp: "熊本", base: 0, x:1, y:11 }, 
+            { id: "miyazaki", name: "MYZ", jp: "宮崎", base: 0, x:2, y:11 },
+            { id: "nagasaki", name: "NGS", jp: "長崎", base: 0, x:0, y:11 }, 
+            { id: "kagoshima", name: "KGS", jp: "鹿児島", base: 0, x:1, y:12 },
+            { id: "okinawa", name: "OKA", jp: "沖縄", base: 1, x:0, y:2 }
         ];
 
         let totalCount = prefectures.reduce((sum, p) => sum + p.count, 0);
@@ -572,13 +594,13 @@
             }
         }
 
-        // 🗺️ 日本列島の構築
         function buildSystemComponents() {
             areaListEl.innerHTML = "";
             selectPrefEl.innerHTML = '<option value="">現在エリアを選択</option>';
             cyberMapCanvas.innerHTML = "";
 
-            for (let y = 9; y >= 0; y--) {
+            // 12x13マスのデジタルキャンバスを綺麗に生成
+            for (let y = 0; y < 13; y++) {
                 for (let x = 0; x < 12; x++) {
                     const node = document.createElement('div');
                     node.className = 'map-node';
@@ -605,7 +627,6 @@
                                   <div class="area-stats"><span class="area-count" id="count-${p.id}">0人</span><span class="area-val" id="val-${p.id}">0%</span></div>`;
                 areaListEl.appendChild(item);
                 
-                // ガチ同期通信
                 db.get('prefectures').get(p.id).on((data) => {
                     if (data) {
                         const count = data.count || 0, rate = data.rate || 0;
@@ -615,7 +636,6 @@
                         
                         const mapNodeEl = document.querySelector(`[data-pref-id="${p.id}"]`);
                         
-                        // 3色の色分けルール連動 (青 > 黄 > 赤点滅)
                         if(mapNodeEl) {
                             mapNodeEl.classList.remove('node-blue', 'node-yellow', 'node-red-flash');
                             if (rate >= 31) {
@@ -635,20 +655,17 @@
             db.get('totalCount').on((val) => { totalCountEl.innerText = (val || 0).toLocaleString() + "人"; });
         }
 
-        // 今日・昨日の地図連動
         function refreshMapColors(isYesterday) {
             prefectures.forEach(p => {
                 const mapNodeEl = document.querySelector(`[data-pref-id="${p.id}"]`);
                 if(mapNodeEl) {
                     mapNodeEl.classList.remove('node-blue', 'node-yellow', 'node-red-flash');
                     if(isYesterday) {
-                        // 昨日の全国アーカイブカラー (ランダム風)
-                        let mockRate = (p.base * 15) % 60;
+                        let mockRate = (p.base * 25 + 12) % 65;
                         if (mockRate >= 31) mapNodeEl.classList.add('node-red-flash');
                         else if (mockRate >= 11) mapNodeEl.classList.add('node-yellow');
                         else mapNodeEl.classList.add('node-blue');
                     } else {
-                        // 今日のリアルタイム連動
                         db.get('prefectures').get(p.id).once((data) => {
                             let rate = (data && data.rate) ? data.rate : 0;
                             if (rate >= 31) mapNodeEl.classList.add('node-red-flash');
@@ -780,10 +797,15 @@
             });
         }
 
+        // 🚀 【超重要バグ修正】通信より先に最優先でモーダルをパッと閉じる/開く処理を実行！
         reportBtn.addEventListener('click', () => {
             playBeep(880, 0.1);
+            if (audioCtx) initAudio(); 
+
             if (localUserStatus === "HAZARD") {
-                localUserStatus = "CLEAN"; localStorage.setItem('furo_user_status', "CLEAN");
+                // 画面をクリーンモードに戻す処理を一瞬で行う
+                localUserStatus = "CLEAN"; 
+                localStorage.setItem('furo_user_status', "CLEAN");
                 
                 const todayStr = getTodayString();
                 if (lastSuccessDate !== todayStr) {
@@ -792,15 +814,25 @@
                     totalSuccessCount += 1; localStorage.setItem('furo_total_success', totalSuccessCount);
                 }
                 
-                applySystemStatus(); addLog('recovery'); decrementPrefecture(myPrefID); 
+                applySystemStatus(); 
+                addLog('recovery'); 
+                
+                // 通信は裏側でひっそり行う（画面を止めない）
+                setTimeout(() => { decrementPrefecture(myPrefID); }, 50);
             } else {
                 reportModal.style.display = 'flex';
             }
         });
 
+        // 入浴成功ボタンを押したとき
         successBtn.addEventListener('click', () => {
             playBeep(1200, 0.15);
-            localUserStatus = "CLEAN"; localStorage.setItem('furo_user_status', "CLEAN");
+            
+            // 1. 最優先で画面のモーダルを閉じる
+            reportModal.style.display = 'none';
+            
+            localUserStatus = "CLEAN"; 
+            localStorage.setItem('furo_user_status', "CLEAN");
             
             const todayStr = getTodayString();
             if (lastSuccessDate !== todayStr) {
@@ -809,23 +841,35 @@
                 totalSuccessCount += 1; localStorage.setItem('furo_total_success', totalSuccessCount);
             }
             
-            applySystemStatus(); reportModal.style.display = 'none'; addLog('success');
-            decrementPrefecture(myPrefID); 
+            applySystemStatus(); 
+            addLog('success');
+            
+            // 2. 通信は裏でゆっくり走らせる
+            setTimeout(() => { decrementPrefecture(myPrefID); }, 50);
         });
 
+        // 風呂キャンボタンを押したとき
         failBtn.addEventListener('click', () => {
             playAlarmSound();
-            localUserStatus = "HAZARD"; localStorage.setItem('furo_user_status', "HAZARD");
-            consecutiveDays = 0; localStorage.setItem('furo_consecutive_days_v5', 0);
-            totalFailCount += 1; localStorage.setItem('furo_total_fail', totalFailCount);
+            
+            // 1. 最優先で2択モーダルを閉じて、入力モーダルを開く
+            reportModal.style.display = 'none';
+            failedModal.style.display = 'flex';
+            
+            localUserStatus = "HAZARD"; 
+            localStorage.setItem('furo_user_status', "HAZARD");
+            consecutiveDays = 0; 
+            localStorage.setItem('furo_consecutive_days_v5', 0);
+            totalFailCount += 1; 
+            localStorage.setItem('furo_total_fail', totalFailCount);
 
             applySystemStatus();
-            reportModal.style.display = 'none';
-            setTimeout(() => { failedModal.style.display = 'flex'; }, 300); 
         });
 
+        // 報告送信ボタンを押したとき
         submitFailedBtn.addEventListener('click', () => {
             playBeep(600, 0.4);
+            
             let hour = document.getElementById('time-hour').value || '07';
             let min = document.getElementById('time-min').value || '00';
             hour = hour.toString().padStart(2, '0'); min = min.toString().padStart(2, '0');
@@ -835,14 +879,19 @@
 
             localStorage.setItem('furo_next_time', targetTime);
             localStorage.setItem('furo_last_reason', reason);
+            
+            // 1. 最優先で入力モーダルを閉じる
             failedModal.style.display = 'none';
 
             applySystemStatus();
             addLog('fail', reason, `明日 ${targetTime}`);
-            incrementPrefecture(myPrefID); 
+            
+            // 2. 通信は裏でゆっくり走らせる
+            setTimeout(() => { incrementPrefecture(myPrefID); }, 50);
         });
 
         function incrementPrefecture(id) {
+            if(!id) return;
             db.get('prefectures').get(id).once((data) => {
                 let currentCount = (data ? data.count : 0) + 1;
                 let currentRate = parseFloat(Math.min(100, currentCount * 12.5).toFixed(1));
@@ -852,12 +901,18 @@
         }
 
         function decrementPrefecture(id) {
+            if(!id) return;
             db.get('prefectures').get(id).once((data) => {
                 let currentCount = Math.max(0, (data ? data.count : 0) - 1);
                 let currentRate = parseFloat(Math.min(100, currentCount * 12.5).toFixed(1));
                 db.get('prefectures').get(id).put({ count: currentCount, rate: currentRate });
             });
             db.get('totalCount').once((total) => { db.get('totalCount').put(Math.max(0, (total || 0) - 1)); });
+        }
+
+        function getTodayString() {
+            const d = new Date();
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
         }
     </script>
 </body>
