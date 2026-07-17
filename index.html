@@ -124,6 +124,12 @@
         .report-btn:active {
             transform: scale(0.94); box-shadow: 0 0 10px rgba(0, 255, 204, 0.3), inset 0 0 30px rgba(0, 0, 0, 0.9);
         }
+        .report-btn:disabled {
+            background: #111827 !important; border-color: #374151 !important; color: #4b5563 !important;
+            box-shadow: none !important; cursor: not-allowed;
+        }
+        .report-btn:disabled::before { border-color: #374151 !important; animation: none; }
+
         .report-btn.decontaminate-mode {
             border-color: #ef4444; color: #ef4444; font-size: 20px;
             background: radial-gradient(circle, #451212 0%, #170404 80%, #000000 100%);
@@ -315,7 +321,7 @@
             <div class="tab-page page-active" id="page-control">
                 <div class="center-console">
                     <p class="console-tag" id="main-switch-tag">[ MISSION REPORT SWITCH ]</p>
-                    <button class="report-btn" id="trigger-report">REPORT</button>
+                    <button class="report-btn" id="trigger-report" disabled>LOCKED</button>
                     <div class="next-schedule-display" id="next-schedule">NEXT DECONTAMINATION: --:--</div>
                     <div class="rank-display" id="rank-badge">RANK: [ 一般市民 - CITIZEN ]</div>
                     <button class="share-trigger-btn" id="share-report-btn" onclick="openShareModal()">[ GENERATE REPORT / 報告書を発行 ]</button>
@@ -439,7 +445,7 @@
                 <option value="布団との不可侵条約">布団との不可侵条約（既に寝落ち寸前）</option>
                 <option value="水資源の保護">水資源の保護（地球防衛活動）</option>
                 <option value="高熱（正当防衛）">高熱（※正当防衛を主張）</option>
-                <option value="精神的敗北">精神的敗北（シンプルにだだるい）</option>
+                <option value="精神的敗北">精神的敗北（シンプルにだるい）</option>
             </select>
 
             <p style="text-align: left; font-size: 12px; color: #64748b; margin-bottom: 5px;">[ DECONTAMINATION TIME / 次回作戦時刻 ]</p>
@@ -505,7 +511,7 @@
             { id: "okinawa", name: "OKA", jp: "沖縄", x:0, y:0 }
         ];
 
-        // 🚨 【超重要：大復活】前回のコードで完全に抜け落ちていたアカウント画面の4大変数宣言！
+        // ⭕️ 4大宣言コード抜けを完全に防止・固定！
         const accountModal = document.getElementById('account-modal');
         const selectPrefEl = document.getElementById('user-prefecture');
         const submitAccountBtn = document.getElementById('submit-account');
@@ -591,6 +597,7 @@
             }
         }
 
+        // 🗺️ HTML・日本地図要素の初期組み立て(1回のみ)
         function buildSystemComponents() {
             areaListEl.innerHTML = "";
             selectPrefEl.innerHTML = '<option value="">現在エリアを選択</option>';
@@ -625,6 +632,7 @@
             });
         }
 
+        // 🛰️ 【2重ショートを1本に統合】Firebase監視ネットワークをここに一本化！
         function connectFirebaseNetwork() {
             prefectures.forEach(p => {
                 fbDB.ref('areas/' + p.id).on('value', (snapshot) => {
@@ -639,6 +647,7 @@
                             rate = parseFloat(((cancels / soldiers) * 100).toFixed(1));
                         }
                     }
+                    // リスト（MONITOR）とドット日本地図（MAP）を完全に直結連動更新
                     updateUIValues(p.id, cancels, rate);
                 });
             });
@@ -658,6 +667,7 @@
             const itemEl = document.getElementById(`area-${prefId}`);
             const mapNodeEl = document.querySelector(`[data-pref-id="${prefId}"]`);
             
+            // 🗺️ 地図のドットノードをガチのリアルタイムデータと直結色分け発光連動！
             if(mapNodeEl) {
                 mapNodeEl.classList.remove('node-blue', 'node-yellow', 'node-red-flash');
                 if (rate >= 31) {
@@ -706,7 +716,7 @@
             if(type === 'success') {
                 logItem.className = 'log-item success-log';
                 let txt = `[${timeStr}] MISSION COMPLISHED: 除染任務成功`;
-                if(myLikeBath.includes("REBEL")) {
+                if(myLikeBath && myLikeBath.includes("REBEL")) {
                     txt = `[${timeStr}] 【奇跡】お風呂嫌いの戦闘員 ${myNickname} が、己の恐怖に打ち勝ち除染に成功！`;
                 }
                 logItem.innerHTML = txt;
@@ -720,24 +730,39 @@
             userLogList.insertBefore(logItem, userLogList.firstChild);
         }
 
+        function checkRegistrationLock() {
+            const matched = prefectures.find(p => p.id === myPrefID);
+            if (!myNickname || !myPrefID || !matched) {
+                reportBtn.disabled = true;
+                reportBtn.innerText = "LOCKED";
+                mainSwitchTag.innerText = "[ 警報：戦闘員プロファイルが未登録です ]";
+            } else {
+                reportBtn.disabled = false;
+                if (localUserStatus === "HAZARD") {
+                    reportBtn.innerText = "DECONTAMINATE";
+                    reportBtn.classList.add('decontaminate-mode');
+                    mainSwitchTag.innerText = "[ 警報：緊急除染プロトコルを実行せよ ]";
+                } else {
+                    reportBtn.innerText = "REPORT";
+                    reportBtn.classList.remove('decontaminate-mode');
+                    mainSwitchTag.innerText = "[ MISSION REPORT SWITCH ]";
+                }
+            }
+        }
+
         function applySystemStatus() {
             if (localUserStatus === "HAZARD") {
                 mainPanel.classList.add('hazard-alert-bg'); mainStatusHeader.classList.add('hazard-alert-border');
                 alertStatus.innerText = 'WARNING: HAZARD DETECTED'; alertStatus.style.background = '#ef4444'; alertStatus.style.color = '#fff'; alertStatus.classList.add('hazard-badge');
-
-                reportBtn.classList.add('decontaminate-mode'); reportBtn.innerText = "DECONTAMINATE";
-                mainSwitchTag.innerText = "[ 警報：緊急除染プロトコルを実行せよ ]";
                 
                 const savedTime = localStorage.getItem('furo_next_time') || "07:00";
                 nextSchedule.innerText = `NEXT DECONTAMINATION: 明日 ${savedTime}`; nextSchedule.style.display = 'block';
             } else {
                 mainPanel.classList.remove('hazard-alert-bg'); mainStatusHeader.classList.remove('hazard-alert-border');
                 alertStatus.innerText = 'STATUS: CLEAN'; alertStatus.style.background = '#00ffcc'; alertStatus.style.color = '#000'; alertStatus.classList.remove('hazard-badge');
-
-                reportBtn.classList.remove('decontaminate-mode'); reportBtn.innerText = "REPORT";
-                mainSwitchTag.innerText = "[ MISSION REPORT SWITCH ]";
                 nextSchedule.style.display = 'none';
             }
+            checkRegistrationLock();
             updateRankDisplay();
             updateSurvivalIndicator();
         }
@@ -755,7 +780,6 @@
 
         function refreshProfilePage() {
             document.getElementById('prof-disp-name').innerText = myNickname || "未登録";
-            
             const currentPref = prefectures.find(p => p.id === myPrefID);
             document.getElementById('prof-disp-sector').innerText = currentPref ? `${currentPref.jp}` : "未登録 (再設定してください)";
             document.getElementById('prof-disp-type').innerText = myLikeBath || "未登録";
@@ -771,7 +795,7 @@
             accountModal.style.display = "flex";
         }
 
-        // 初期化プロトコル
+        // 🚀 起動処理ライン
         buildSystemComponents(); 
         applySystemStatus();    
 
@@ -782,10 +806,15 @@
 
             if(!nicknameInput || !prefSelect) { alert("プロファイルを正しく入力せよ。"); return; }
             
+            // 👥 全員分を完璧に集計するための分母トランザクション
             if(myPrefID && myPrefID !== prefSelect && prefectures.find(p=>p.id===myPrefID)) {
-                fbDB.ref('areas/' + myPrefID + '/total_soldiers').transaction((current) => (current || 1) - 1);
+                fbDB.ref('areas/' + myPrefID + '/total_soldiers').transaction((current) => {
+                    let v = (current || 1) - 1; return v < 0 ? 0 : v;
+                });
             }
-            fbDB.ref('areas/' + prefSelect + '/total_soldiers').transaction((current) => (current || 0) + 1);
+            if(!myPrefID || myPrefID !== prefSelect) {
+                fbDB.ref('areas/' + prefSelect + '/total_soldiers').transaction((current) => (current || 0) + 1);
+            }
 
             localStorage.setItem('furo_nickname', nicknameInput);
             localStorage.setItem('furo_pref_id', prefSelect);
@@ -798,16 +827,17 @@
 
             playBeep(1000, 0.2); accountModal.style.display = "none";
             refreshProfilePage();
+            applySystemStatus();
         });
 
-        // 🚪 ハッチオープン！
+        // 🚪 ハッチオープン
         bootBtn.addEventListener('click', () => {
             playPshhhSound(); bootBtn.style.display = 'none';
             topDoor.classList.add('open-top'); bottomDoor.classList.add('open-bottom');
             setTimeout(() => {
                 mainPanel.classList.add('panel-visible');
                 
-                // 通信回線接続
+                // 📡 ハッチが開いた瞬間にFirebaseの1本に統合された通信回路を繋ぐ！
                 connectFirebaseNetwork();
 
                 const matched = prefectures.find(p=>p.id===myPrefID);
@@ -840,6 +870,7 @@
         }
 
         reportBtn.addEventListener('click', () => {
+            if (reportBtn.disabled) return;
             playBeep(880, 0.1);
             if (audioCtx) initAudio(); 
 
@@ -905,6 +936,7 @@
             shareReportBtn.classList.add('stealth-visible');
         });
 
+        // 👥 送信された「全員分」のデータを確実にFirebaseへ合算加算・減算させるプロトコル
         function incrementPrefecture(id) {
             if(!id || !prefectures.find(p=>p.id===id)) return;
             fbDB.ref('areas/' + id + '/active_cancels').transaction((current) => (current || 0) + 1);
@@ -914,12 +946,10 @@
         function decrementPrefecture(id) {
             if(!id || !prefectures.find(p=>p.id===id)) return;
             fbDB.ref('areas/' + id + '/active_cancels').transaction((current) => {
-                let val = (current || 0) - 1;
-                return val < 0 ? 0 : val;
+                let val = (current || 0) - 1; return val < 0 ? 0 : val;
             });
             fbDB.ref('global/total_active_cancels').transaction((current) => {
-                let val = (current || 0) - 1;
-                return val < 0 ? 0 : val;
+                let val = (current || 0) - 1; return val < 0 ? 0 : val;
             });
         }
 
