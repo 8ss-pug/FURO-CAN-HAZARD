@@ -10,21 +10,16 @@
         /* --- 全体の電脳サイバーデザイン --- */
         * {
             box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             font-family: 'Share Tech Mono', 'DotGothic16', sans-serif;
         }
         body, html {
-            height: 100%;
-            background-color: #03060a;
-            color: #00ffcc;
-            overflow: hidden;
+            height: 100%; background-color: #03060a; color: #00ffcc; overflow: hidden;
         }
 
         /* --- 🚀 宇宙船のハッチ --- */
         .door {
-            position: absolute;
-            left: 0; width: 100%; height: 50%;
+            position: absolute; left: 0; width: 100%; height: 50%;
             background: linear-gradient(135deg, #1b2330, #090d16);
             border: 4px solid #1f2937; z-index: 10;
             display: flex; justify-content: center; align-items: center;
@@ -63,21 +58,20 @@
             animation: red-flash-bg 1s infinite alternate;
         }
 
-        /* 最上部：ステータスバー */
         .status-header {
             border: 1px solid #00ffcc; padding: 10px 15px;
             background: rgba(0, 255, 204, 0.05);
             display: flex; justify-content: space-between; align-items: center;
         }
         .status-header.hazard-alert-border { border-color: #ef4444; background: rgba(239, 68, 68, 0.1); }
-        .status-title { font-size: 14px; letter-spacing: 2px; color: #00ffcc; }
+        .status-title { font-size: 13px; letter-spacing: 2px; color: #00ffcc; }
         .status-badge {
             background: #00ffcc; color: #000; padding: 4px 12px;
-            font-weight: bold; font-size: 13px; letter-spacing: 1px;
+            font-weight: bold; font-size: 12px; letter-spacing: 1px;
         }
         .status-badge.hazard-badge { background: #ef4444; color: #fff; animation: blink 0.5s infinite alternate; }
 
-        /* 🎛️ 画面切り替え用の「電脳タブバー」 */
+        /* 🎛️ 電脳タブバー */
         .tab-bar {
             display: flex; gap: 5px; margin-top: 15px;
             border-bottom: 2px solid #1e293b; padding-bottom: 5px;
@@ -86,8 +80,7 @@
             flex: 1; padding: 12px 5px; background: #0c1524;
             border: 1px solid #1e293b; color: #475569;
             font-size: 14px; font-weight: bold; cursor: pointer;
-            letter-spacing: 1px; transition: all 0.2s;
-            text-align: center;
+            letter-spacing: 1px; transition: all 0.2s; text-align: center;
         }
         .tab-button.active-tab {
             background: #112235; border-color: #00ffcc; color: #00ffcc;
@@ -95,31 +88,23 @@
         }
         .control-panel.hazard-alert-bg .tab-button.active-tab {
             border-color: #ef4444; color: #ef4444;
-            box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
         }
 
-        /* タブの中身コンテナ */
-        .tab-content-container {
-            flex-grow: 1; margin-top: 15px; min-height: 0; position: relative;
-        }
-        .tab-page {
-            position: absolute; width: 100%; height: 100%;
-            display: none; flex-direction: column;
-        }
+        .tab-content-container { flex-grow: 1; margin-top: 15px; min-height: 0; position: relative; }
+        .tab-page { position: absolute; width: 100%; height: 100%; display: none; flex-direction: column; }
         .page-active { display: flex; }
 
-        /* --- 【TAB 1】 CONTROL 画面 (文字を大きく、すっきりと) --- */
+        /* 【TAB 1】 CONTROL 画面 */
         .center-console {
             height: 100%; display: flex; flex-direction: column;
             align-items: center; justify-content: center;
-            border: 1px solid rgba(0, 255, 204, 0.1); background: rgba(0, 0, 0, 0.3);
-            padding: 20px;
+            border: 1px solid rgba(0, 255, 204, 0.1); background: rgba(0, 0, 0, 0.3); padding: 20px;
         }
-        .console-tag { font-size: 14px; color: #88ffcc; letter-spacing: 3px; margin-bottom: 25px; }
+        .console-tag { font-size: 14px; color: #88ffcc; letter-spacing: 3px; margin-bottom: 20px; text-align: center; }
         .report-btn {
-            width: 170px; height: 170px; border-radius: 50%;
+            width: 160px; height: 160px; border-radius: 50%;
             background: radial-gradient(circle, #0f172a 0%, #020617 100%);
-            border: 5px solid #00ffcc; color: #00ffcc; font-size: 26px; font-weight: bold;
+            border: 5px solid #00ffcc; color: #00ffcc; font-size: 24px; font-weight: bold;
             cursor: pointer; box-shadow: 0 0 30px rgba(0, 255, 204, 0.3); transition: all 0.3s ease;
             position: relative; letter-spacing: 4px; padding-left: 4px;
         }
@@ -127,15 +112,24 @@
             content: ''; position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px;
             border-radius: 50%; border: 1px dashed rgba(0, 255, 204, 0.3); animation: spin 12s linear infinite;
         }
-        .report-btn:hover { box-shadow: 0 0 50px rgba(0, 255, 204, 0.6); }
+        /* 🚨 緊急除染ボタンに切り替わったときの赤発光デザイン */
+        .report-btn.decontaminate-mode {
+            border-color: #ef4444; color: #ef4444; font-size: 20px;
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.4);
+        }
+        .report-btn.decontaminate-mode::before { border-color: rgba(239, 68, 68, 0.4); }
+        
+        .report-btn:disabled { border-color: #2a3547; color: #475569; background: #0a0f1d; cursor: not-allowed; box-shadow: none; }
+        .report-btn:disabled::before { animation: none; border-color: transparent; }
+        
         .next-schedule-display {
-            margin-top: 25px; font-size: 14px; color: #f87171; border: 1px solid #ef4444;
-            padding: 8px 20px; background: rgba(239, 68, 68, 0.1); border-radius: 3px;
+            margin-top: 20px; font-size: 13px; color: #f87171; border: 1px solid #ef4444;
+            padding: 6px 16px; background: rgba(239, 68, 68, 0.1); border-radius: 3px;
             display: none; letter-spacing: 2px; font-weight: bold;
         }
-        .rank-display { margin-top: 20px; font-size: 16px; color: #00ffcc; letter-spacing: 1px; font-weight: bold; }
+        .rank-display { margin-top: 15px; font-size: 15px; color: #00ffcc; letter-spacing: 1px; font-weight: bold; text-align: center; }
 
-        /* --- 【TAB 2】 MONITOR 画面 (文字を大きく見やすく) --- */
+        /* 【TAB 2】 MONITOR 画面 */
         .hazard-map-box {
             border: 1px solid rgba(0, 255, 204, 0.2); background: rgba(0, 0, 0, 0.5);
             height: 100%; padding: 15px; display: flex; flex-direction: column;
@@ -159,7 +153,7 @@
         .area-count { color: #64748b; }
         .area-val { font-weight: bold; width: 60px; text-align: right; }
 
-        /* --- 【TAB 3】 LOG 画面 --- */
+        /* 【TAB 3】 LOG 画面 */
         .log-console {
             border: 1px solid rgba(0, 255, 204, 0.2); background: rgba(0, 0, 0, 0.5);
             padding: 15px; height: 100%; display: flex; flex-direction: column;
@@ -172,12 +166,11 @@
         .log-item.success-log { border-left-color: #00ffcc; }
         .log-time { color: #64748b; margin-right: 8px; }
 
-        /* --- 【TAB 4】 MAP 画面 (今日・昨日の切り替え) --- */
+        /* 【TAB 4】 MAP 画面 */
         .map-wrapper {
             border: 1px solid rgba(0, 255, 204, 0.2); background: rgba(0, 0, 0, 0.5);
             padding: 15px; height: 100%; display: flex; flex-direction: column; align-items: center;
         }
-        /* 電子トグルスイッチ */
         .time-toggle-bar {
             display: flex; width: 240px; background: #0c1524; border: 1px solid #1e293b;
             margin-bottom: 20px; border-radius: 3px; overflow: hidden;
@@ -187,19 +180,12 @@
             color: #475569; cursor: pointer; transition: all 0.2s; letter-spacing: 1px;
         }
         .toggle-btn.active-toggle { background: #112235; color: #00ffcc; text-shadow: 0 0 5px #00ffcc; }
-        
-        /* 未来の日本地図が入る巨大ハザードエリア */
         .future-map-canvas {
             flex-grow: 1; width: 100%; border: 1px dashed rgba(0, 255, 204, 0.3);
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             background: rgba(0,0,0,0.4); position: relative;
         }
-        .map-grid-effect {
-            position: absolute; width: 100%; height: 100%;
-            background-image: linear-gradient(rgba(0, 255, 204, 0.02) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(0, 255, 204, 0.02) 1px, transparent 1px);
-            background-size: 20px 20px;
-        }
+        .map-grid-effect { position: absolute; width: 100%; height: 100%; background-image: linear-gradient(rgba(0, 255, 204, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 204, 0.02) 1px, transparent 1px); background-size: 20px 20px; }
         .map-placeholder-text { z-index: 1; font-size: 14px; color: #64748b; letter-spacing: 2px; text-align: center; padding: 20px; }
 
         /* --- 💰 収益化用広告バー --- */
@@ -215,7 +201,7 @@
             animation: ad-scan 4s infinite linear;
         }
 
-        /* --- 💥 モーダル枠 --- */
+        /* --- 💥 モーダル・入力枠共通 --- */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 4, 8, 0.96); z-index: 20; justify-content: center; align-items: center; padding: 20px;
@@ -226,10 +212,21 @@
         }
         .modal-title { font-size: 18px; color: #00ffcc; letter-spacing: 3px; margin-bottom: 8px; }
         .modal-subtitle { color: #475569; margin-bottom: 25px; font-size: 13px; }
-        .choices-box { display: flex; flex-direction: column; gap: 15px; }
         
+        .input-text-cyber {
+            width: 100%; padding: 12px; background: #03060a; border: 1px solid #00ffcc; color: #fff; font-size: 15px; margin-bottom: 15px; outline: none;
+        }
+        .select-cyber {
+            width: 100%; padding: 12px; background: #03060a; border: 1px solid #00ffcc; color: #00ffcc; font-size: 15px; margin-bottom: 20px; outline: none;
+        }
+        .checkbox-label-cyber {
+            display: flex; align-items: center; justify-content: center; gap: 10px; color: #88ffcc; font-size: 14px; margin-bottom: 25px; cursor: pointer;
+        }
+        .checkbox-cyber { width: 18px; height: 18px; accent-color: #00ffcc; }
+
+        .choices-box { display: flex; flex-direction: column; gap: 15px; }
         .choice-btn {
-            position: relative; padding: 18px 15px 18px 45px; border: 1px solid #1e293b;
+            position: relative; padding: 16px 15px 16px 45px; border: 1px solid #1e293b;
             background: #0b1320; color: #64748b; font-size: 15px; font-weight: bold;
             letter-spacing: 1.5px; text-align: left; cursor: pointer; transition: all 0.2s ease;
         }
@@ -249,10 +246,14 @@
         }
         .time-input-box { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; }
         .time-input {
-            width: 80px; padding: 10px; background: #03060a; border: 1px solid #ef4444;
+            width: 70px; padding: 8px; background: #03060a; border: 1px solid #ef4444;
             color: #fff; text-align: center; font-size: 20px; font-weight: bold; outline: none;
         }
         .time-label { align-self: center; color: #ef4444; font-weight: bold; font-size: 18px; }
+        
+        .submit-cyber-btn {
+            width: 100%; padding: 16px; background: #00ffcc; color: #000; border: none; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
+        }
         .submit-failed-btn {
             width: 100%; padding: 16px; background: #ef4444; color: #000; border: none;
             font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
@@ -276,7 +277,7 @@
 
     <div class="control-panel" id="main-panel">
         <div class="status-header" id="main-status-header">
-            <span class="status-title">[ GLOBAL NETWORK MONITORING ]</span>
+            <span class="status-title" id="user-info-display">[ GLOBAL MONITORING ]</span>
             <span class="status-badge" id="alert-status">STATUS: CLEAN</span>
         </div>
 
@@ -291,7 +292,7 @@
             
             <div class="tab-page page-active" id="page-control">
                 <div class="center-console">
-                    <p class="console-tag">[ MISSION REPORT SWITCH ]</p>
+                    <p class="console-tag" id="main-switch-tag">[ MISSION REPORT SWITCH ]</p>
                     <button class="report-btn" id="trigger-report">REPORT</button>
                     <div class="next-schedule-display" id="next-schedule">NEXT DECONTAMINATION: --:--</div>
                     <div class="rank-display" id="rank-badge">RANK: [ 一般市民 - CITIZEN ]</div>
@@ -312,7 +313,7 @@
 
             <div class="tab-page" id="page-log">
                 <div class="log-console">
-                    <p class="log-title" style="margin-bottom: 10px; font-size: 13px; color:#00ffcc;">[ MISSION LOG LIST / 行動履歴 ]</p>
+                    <p class="log-title" style="margin-bottom: 10px; font-size: 14px; color:#00ffcc;">[ MISSION LOG LIST / 行動履歴 ]</p>
                     <div class="log-list" id="user-log-list">
                         <p class="log-item success-log" id="no-log-msg" style="border:none; color:#64748b; text-align:center; margin-top:20px;">ログデータはありません</p>
                     </div>
@@ -343,6 +344,25 @@
         </div>
     </div>
 
+    <div class="modal" id="account-modal" style="display: none; z-index: 30;">
+        <div class="modal-content">
+            <p class="modal-title">[ NEW SOLDIER DETECTION ]</p>
+            <p class="modal-subtitle">未登録の戦闘員を検出。プロファイルを登録せよ。</p>
+            
+            <input type="text" class="input-text-cyber" id="user-nickname" placeholder="ニックネームを入力">
+            
+            <select class="select-cyber" id="user-prefecture">
+                </select>
+
+            <label class="checkbox-label-cyber">
+                <input type="checkbox" class="checkbox-cyber" id="user-like-bath">
+                そもそもお風呂は好きである
+            </label>
+
+            <button class="submit-cyber-btn" id="submit-account">データ同期・システム起動</button>
+        </div>
+    </div>
+
     <div class="modal" id="report-modal">
         <div class="modal-content">
             <p class="modal-title">MISSION STATUS CHECK</p>
@@ -370,7 +390,7 @@
 
             <p style="text-align: left; font-size: 12px; color: #64748b; margin-bottom: 5px;">[ DECONTAMINATION TIME / 次回作戦時刻 ]</p>
             <div class="time-input-box">
-                <input type="number" class="time-input" id="time-hour" placeholder="23" min="0" max="23">
+                <input type="number" class="time-input" id="time-hour" placeholder="07" min="0" max="23">
                 <span class="time-label">:</span>
                 <input type="number" class="time-input" id="time-min" placeholder="00" min="0" max="59">
             </div>
@@ -379,9 +399,9 @@
     </div>
 
     <script>
-        // 🛰️ 【超重要】世界中の混線を断ち切る、あなたたち専用の最新クリーン通信ルートを新設！
+        // 🛰️ 最新のあなたたち専用通信ルート (バージョン5)
         const gun = Gun(['https://gun-manhattan.herokuapp.com/gun']);
-        const db = gun.get('furocan-hazard-private-okayama-2026-v3'); 
+        const db = gun.get('furocan-hazard-private-okayama-2026-v5'); 
 
         const prefectures = [
             { id: "hokkaido", name: "HOKKAIDO", jp: "ホッカイドウ", base: 1 }, { id: "aomori", name: "AOMORI", jp: "アオモリ", base: 0 },
@@ -418,11 +438,18 @@
         const successBtn = document.getElementById('success-btn'), failBtn = document.getElementById('fail-btn'), submitFailedBtn = document.getElementById('submit-failed-report');
         const alertStatus = document.getElementById('alert-status'), nextSchedule = document.getElementById('next-schedule'), totalCountEl = document.getElementById('total-hazard-count');
         const areaListEl = document.getElementById('japan-area-list'), mainStatusHeader = document.getElementById('main-status-header');
-        const userLogList = document.getElementById('user-log-list'), rankBadge = document.getElementById('rank-badge');
+        const userLogList = document.getElementById('user-log-list'), rankBadge = document.getElementById('rank-badge'), mainSwitchTag = document.getElementById('main-switch-tag');
+        
+        const accountModal = document.getElementById('account-modal'), selectPrefEl = document.getElementById('user-prefecture'), submitAccountBtn = document.getElementById('submit-account'), userInfoDisplay = document.getElementById('user-info-display');
 
         let audioCtx = null;
-        let localUserStatus = "CLEAN";
-        let consecutiveDays = parseInt(localStorage.getItem('furo_consecutive_days_v3')) || 0;
+        let localUserStatus = localStorage.getItem('furo_user_status') || "CLEAN"; // CLEAN or HAZARD
+        let consecutiveDays = parseInt(localStorage.getItem('furo_consecutive_days_v5')) || 0;
+        let lastSuccessDate = localStorage.getItem('furo_last_success_date') || ""; // 不正連打防止用の最終成功日
+        
+        let myNickname = localStorage.getItem('furo_nickname') || "";
+        let myPrefID = localStorage.getItem('furo_pref_id') || "";
+        let myLikeBath = localStorage.getItem('furo_like_bath') || "";
 
         function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
         function playPshhhSound() {
@@ -455,31 +482,16 @@
             }
         }
 
-        // 📊 電脳タブの切り替えシステム
         function switchTab(tabName) {
             playBeep(600, 0.05);
-            // タブボタンの光をすべて消す
             document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active-tab'));
-            // 画面をすべて非表示にする
             document.querySelectorAll('.tab-page').forEach(page => page.classList.remove('page-active'));
-            
-            // 選択されたタブと画面を起動
-            if(tabName === 'control') {
-                document.querySelectorAll('.tab-button')[0].classList.add('active-tab');
-                document.getElementById('page-control').classList.add('page-active');
-            } else if(tabName === 'monitor') {
-                document.querySelectorAll('.tab-button')[1].classList.add('active-tab');
-                document.getElementById('page-monitor').classList.add('page-active');
-            } else if(tabName === 'log') {
-                document.querySelectorAll('.tab-button')[2].classList.add('active-tab');
-                document.getElementById('page-log').classList.add('page-active');
-            } else if(tabName === 'map') {
-                document.querySelectorAll('.tab-button')[3].classList.add('active-tab');
-                document.getElementById('page-map').classList.add('page-active');
-            }
+            if(tabName === 'control') { document.querySelectorAll('.tab-button')[0].classList.add('active-tab'); document.getElementById('page-control').classList.add('page-active'); }
+            else if(tabName === 'monitor') { document.querySelectorAll('.tab-button')[1].classList.add('active-tab'); document.getElementById('page-monitor').classList.add('page-active'); }
+            else if(tabName === 'log') { document.querySelectorAll('.tab-button')[2].classList.add('active-tab'); document.getElementById('page-log').classList.add('page-active'); }
+            else if(tabName === 'map') { document.querySelectorAll('.tab-button')[3].classList.add('active-tab'); document.getElementById('page-map').classList.add('page-active'); }
         }
 
-        // 🗺️ MAP画面：今日・昨日のスイッチ切り替え
         function switchTime(timeMode) {
             playBeep(700, 0.05);
             document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active-toggle'));
@@ -488,19 +500,26 @@
                 document.getElementById('map-status-text').innerHTML = "[ TARGET: JAPAN MAP ]<br>現在、本日の47都道府県リアルタイムデータを解析中...";
             } else {
                 document.querySelectorAll('.toggle-btn')[1].classList.add('active-toggle');
-                document.getElementById('map-status-text').innerHTML = "[ TARGET: YESTERDAY ARCHIVE ]<br>昨日の最終汚染ログを展開中...<br>昨日の岡山(OKAYAMA)の最終サボり率は 18.4% でした。";
+                document.getElementById('map-status-text').innerHTML = "[ TARGET: YESTERDAY ARCHIVE ]<br>昨日の最終汚染ログを展開中...<br>昨日の岡山(OKAYAMA)の最終サボり率は 0.0% でした。";
             }
         }
 
-        function buildMap() {
+        function buildMapAndSelect() {
             areaListEl.innerHTML = "";
+            selectPrefEl.innerHTML = '<option value="">所属エリア（都道府県）を選択</option>';
             totalCountEl.innerText = totalCount.toLocaleString();
+            
             prefectures.forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = p.id; opt.innerText = `${p.jp} (${p.name})`;
+                selectPrefEl.appendChild(opt);
+
                 const item = document.createElement('div');
                 item.className = 'area-item'; item.id = `area-${p.id}`;
                 item.innerHTML = `<span class="area-name">${p.name} <span class="area-jp">(${p.jp})</span></span>
-                                  <div class="area-stats"><span class="area-count" id="count-${p.id}">0</span><span class="area-val" id="val-${p.id}">0%</span></div>`;
+                                  <div class="area-stats"><span class="area-count" id="count-${p.id}">0人</span><span class="area-val" id="val-${p.id}">0%</span></div>`;
                 areaListEl.appendChild(item);
+                
                 db.get('prefectures').get(p.id).on((data) => {
                     if (data) {
                         const count = data.count || 0, rate = data.rate || 0;
@@ -528,19 +547,63 @@
         }
 
         function addLog(type, reason = "", time = "") {
-            const noLogMsg = document.getElementById('no-log-msg');
-            if(noLogMsg) noLogMsg.remove();
+            const noLogMsg = document.getElementById('no-log-msg'); if(noLogMsg) noLogMsg.remove();
             const now = new Date();
             const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
             const logItem = document.createElement('div');
             if(type === 'success') {
                 logItem.className = 'log-item success-log';
                 logItem.innerHTML = `<span class="log-time">[${timeStr}]</span> MISSION COMPLISHED: 除染任務成功`;
+            } else if(type === 'recovery') {
+                logItem.className = 'log-item success-log';
+                logItem.innerHTML = `<span class="log-time">[${timeStr}]</span> RECOVERY COMPLETE: 緊急除染成功 (お風呂に入った)`;
             } else {
                 logItem.className = 'log-item';
                 logItem.innerHTML = `<span class="log-time">[${timeStr}]</span> FAILED: 風呂キャン検出<br>理由: ${reason}<br>次回予定: ${time}`;
             }
             userLogList.insertBefore(logItem, userLogList.firstChild);
+        }
+
+        function getTodayString() {
+            const d = new Date();
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        }
+
+        // 🎛️ 身体状態（ステータス）に応じたボタン＆画面の表示切替
+        function applySystemStatus() {
+            if (localUserStatus === "HAZARD") {
+                // 🚨 風呂キャン状態（ハザードモード）の画面
+                mainPanel.classList.add('hazard-alert-bg');
+                mainStatusHeader.classList.add('hazard-alert-border');
+                alertStatus.innerText = 'WARNING: HAZARD DETECTED';
+                alertStatus.style.background = '#ef4444';
+                alertStatus.style.color = '#fff';
+                alertStatus.classList.add('hazard-badge');
+
+                // ボタンを除染モードに変更（ロックしない！）
+                reportBtn.classList.add('decontaminate-mode');
+                reportBtn.innerText = "DECONTAMINATE";
+                mainSwitchTag.innerText = "[ 警報：緊急除染プロトコルを実行せよ ]";
+                
+                const savedTime = localStorage.getItem('furo_next_time') || "--:--";
+                nextSchedule.innerText = `NEXT DECONTAMINATION: 明日 ${savedTime}`;
+                nextSchedule.style.display = 'block';
+            } else {
+                // 🟢 平常安全状態（クリーンモード）の画面
+                mainPanel.classList.remove('hazard-alert-bg');
+                mainStatusHeader.classList.remove('hazard-alert-border');
+                alertStatus.innerText = 'STATUS: CLEAN';
+                alertStatus.style.background = '#00ffcc';
+                alertStatus.style.color = '#000';
+                alertStatus.classList.remove('hazard-badge');
+
+                // ボタンを通常モードに戻す
+                reportBtn.classList.remove('decontaminate-mode');
+                reportBtn.innerText = "REPORT";
+                mainSwitchTag.innerText = "[ MISSION REPORT SWITCH ]";
+                nextSchedule.style.display = 'none';
+            }
+            updateRankDisplay();
         }
 
         function updateRankDisplay() {
@@ -553,73 +616,116 @@
             }
         }
 
-        buildMap(); checkAndInitDatabase(); updateRankDisplay();
+        buildMapAndSelect(); checkAndInitDatabase();
+
+        // アカウント登録
+        submitAccountBtn.addEventListener('click', () => {
+            const nicknameInput = document.getElementById('user-nickname').value.trim();
+            const prefSelect = selectPrefEl.value;
+            const likeBathCheck = document.getElementById('user-like-bath').checked ? "お風呂好き" : "カラスの行水派";
+            if(!nicknameInput || !prefSelect) { alert("プロファイルを正しく入力せよ。"); return; }
+            localStorage.setItem('furo_nickname', nicknameInput);
+            localStorage.setItem('furo_pref_id', prefSelect);
+            localStorage.setItem('furo_like_bath', likeBathCheck);
+            myNickname = nicknameInput; myPrefID = prefSelect; myLikeBath = likeBathCheck;
+            userInfoDisplay.innerText = `[ OPERATOR: ${myNickname} (${prefectures.find(p=>p.id===myPrefID).jp}) ]`;
+            playBeep(1000, 0.2); accountModal.style.display = "none";
+        });
 
         bootBtn.addEventListener('click', () => {
             playPshhhSound(); bootBtn.style.display = 'none';
             topDoor.classList.add('open-top'); bottomDoor.classList.add('open-bottom');
-            setTimeout(() => { mainPanel.classList.add('panel-visible'); }, 500);
+            setTimeout(() => {
+                mainPanel.classList.add('panel-visible');
+                if(!myNickname || !myPrefID) { accountModal.style.display = "flex"; } 
+                else { userInfoDisplay.innerText = `[ OPERATOR: ${myNickname} (${prefectures.find(p=>p.id===myPrefID).jp}) ]`; }
+                applySystemStatus(); // 保存されている状態を画面に反映
+            }, 500);
         });
 
-        reportBtn.addEventListener('click', () => { playBeep(880, 0.1); reportModal.style.display = 'flex'; });
+        // 🔘 メインのREPORT / DECONTAMINATE ボタンを押した時の分岐
+        reportBtn.addEventListener('click', () => {
+            playBeep(880, 0.1);
+            if (localUserStatus === "HAZARD") {
+                // 🛡️ 緊急除染（リカバリー）実行！
+                playBeep(1200, 0.2);
+                localUserStatus = "CLEAN";
+                localStorage.setItem('furo_user_status', "CLEAN");
+                
+                // 不正な連打稼ぎを防ぎつつ、1日1回だけ最初の成功日に連続日数を＋1する
+                const todayStr = getTodayString();
+                if (lastSuccessDate !== todayStr) {
+                    consecutiveDays += 1;
+                    localStorage.setItem('furo_consecutive_days_v5', consecutiveDays);
+                    localStorage.setItem('furo_last_success_date', todayStr);
+                    lastSuccessDate = todayStr;
+                }
+                
+                applySystemStatus();
+                addLog('recovery');
+                decrementPrefecture(myPrefID); // 自分の地域の風呂キャン数を減らす
+            } else {
+                // 通常の2択モーダルを開く
+                reportModal.style.display = 'flex';
+            }
+        });
 
-        // 🟢 入浴成功 (ENTERED BATH)
+        // 🟢 通常の入浴成功 (ENTERED BATH)
         successBtn.addEventListener('click', () => {
             playBeep(1200, 0.15);
-            mainPanel.classList.remove('hazard-alert-bg'); mainStatusHeader.classList.remove('hazard-alert-border');
-            alertStatus.innerText = 'STATUS: CLEAN'; alertStatus.style.background = '#00ffcc'; alertStatus.style.color = '#000';
-            alertStatus.classList.remove('hazard-badge');
-            
-            consecutiveDays += 1;
-            localStorage.setItem('furo_consecutive_days_v3', consecutiveDays);
             localUserStatus = "CLEAN";
-            updateRankDisplay();
+            localStorage.setItem('furo_user_status', "CLEAN");
             
-            nextSchedule.style.display = 'none'; reportModal.style.display = 'none';
+            const todayStr = getTodayString();
+            if (lastSuccessDate !== todayStr) {
+                consecutiveDays += 1;
+                localStorage.setItem('furo_consecutive_days_v5', consecutiveDays);
+                localStorage.setItem('furo_last_success_date', todayStr);
+                lastSuccessDate = todayStr;
+            }
+            
+            applySystemStatus();
+            reportModal.style.display = 'none';
             addLog('success');
             
-            // 🛡️ テスト連打できるように、毎回リアルタイムにオカヤマの数値を変化させる！
-            decrementPrefecture('okayama'); 
+            // すでに0人ならマイナスしない安全弁付きの減少処理
+            decrementPrefecture(myPrefID); 
         });
 
-        // 🔴 風呂キャン (CANCELLED)
+        // 🔴 風呂キャン発生 (CANCELLED)
         failBtn.addEventListener('click', () => {
             playAlarmSound();
-            mainPanel.classList.add('hazard-alert-bg'); mainStatusHeader.classList.add('hazard-alert-border');
-            alertStatus.innerText = 'WARNING: HAZARD DETECTED'; alertStatus.style.background = '#ef4444'; alertStatus.style.color = '#fff';
-            alertStatus.classList.add('hazard-badge');
-
-            consecutiveDays = 0;
-            localStorage.setItem('furo_consecutive_days_v3', 0);
             localUserStatus = "HAZARD";
-            updateRankDisplay();
+            localStorage.setItem('furo_user_status', "HAZARD");
+            consecutiveDays = 0;
+            localStorage.setItem('furo_consecutive_days_v5', 0);
 
             reportModal.style.display = 'none';
             setTimeout(() => { failedModal.style.display = 'flex'; }, 300); 
         });
 
-        // ✉️ 送信完了
+        // ✉️ 詳細理由と「明日」の時間の送信完了
         submitFailedBtn.addEventListener('click', () => {
             playBeep(600, 0.4);
-            let hour = document.getElementById('time-hour').value || '23';
+            let hour = document.getElementById('time-hour').value || '07';
             let min = document.getElementById('time-min').value || '00';
             hour = hour.toString().padStart(2, '0'); min = min.toString().padStart(2, '0');
             
             const reason = document.getElementById('failed-reason').value;
             const targetTime = `${hour}:${min}`;
 
-            nextSchedule.innerText = `NEXT DECONTAMINATION: ${targetTime}`;
-            nextSchedule.style.display = 'block';
+            localStorage.setItem('furo_next_time', targetTime);
             failedModal.style.display = 'none';
 
-            addLog('fail', reason, targetTime);
-            incrementPrefecture('okayama'); // 🛡️ テスト連打可能！オカヤマの数値を即座に＋1！
+            applySystemStatus();
+            addLog('fail', reason, `明日 ${targetTime}`);
+            incrementPrefecture(myPrefID); // 自分の地域の風呂キャン数を増やす
         });
 
         function incrementPrefecture(id) {
             db.get('prefectures').get(id).once((data) => {
                 let currentCount = (data ? data.count : 0) + 1;
-                let currentRate = parseFloat(Math.min(100, currentCount * 4.5).toFixed(1));
+                let currentRate = parseFloat(Math.min(100, currentCount * 12.5).toFixed(1));
                 db.get('prefectures').get(id).put({ count: currentCount, rate: currentRate });
             });
             db.get('totalCount').once((total) => { db.get('totalCount').put((total || 0) + 1); });
@@ -628,7 +734,7 @@
         function decrementPrefecture(id) {
             db.get('prefectures').get(id).once((data) => {
                 let currentCount = Math.max(0, (data ? data.count : 0) - 1);
-                let currentRate = parseFloat(Math.min(100, currentCount * 4.5).toFixed(1));
+                let currentRate = parseFloat(Math.min(100, currentCount * 12.5).toFixed(1));
                 db.get('prefectures').get(id).put({ count: currentCount, rate: currentRate });
             });
             db.get('totalCount').once((total) => { db.get('totalCount').put(Math.max(0, (total || 0) - 1)); });
