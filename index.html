@@ -7,47 +7,54 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <style>
-        body{background:#03060a;color:#00ffcc;font-family:'Share Tech Mono',sans-serif;margin:0;}
-        .tab-content{padding:20px;}
-        .area-item{display:flex;justify-content:space-between;padding:15px;border-bottom:1px solid #1e293b;font-size:18px;}
-        .danger{color:#ef4444;font-weight:bold;}
-        .rank-list{margin-top:20px;}
-        .report-btn{width:200px;height:200px;border-radius:50%;background:#03060a;border:5px solid #00ffcc;color:#00ffcc;font-size:20px;cursor:pointer;margin:20px auto;display:block;}
+        body { background: #03060a; color: #00ffcc; font-family: 'Share Tech Mono', sans-serif; margin: 0; }
+        .door { position: fixed; top: 0; left: 0; width: 100%; height: 50%; background: #111; z-index: 100; transition: transform 1s; }
+        .door-bottom { top: 50%; }
+        .open-top { transform: translateY(-100%); }
+        .open-bottom { transform: translateY(100%); }
+        .tab-bar { display: flex; border-bottom: 1px solid #1e293b; }
+        .tab-button { flex: 1; padding: 15px; text-align: center; cursor: pointer; background: #0c1524; }
+        .active-tab { border-bottom: 2px solid #00ffcc; }
+        .tab-page { display: none; padding: 20px; }
+        .page-active { display: block; }
+        .report-btn { width: 150px; height: 150px; border-radius: 50%; background: #00ffcc; color: #000; margin: 50px auto; display: block; font-weight: bold; cursor: pointer; }
+        .rank-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #333; }
     </style>
 </head>
 <body>
-    <div id="app">
-        <div id="control-tab">
+    <div id="top-door" class="door"></div>
+    <div id="bottom-door" class="door door-bottom"></div>
+    <button id="boot-btn" style="position:fixed; top:50%; left:40%; z-index:101;" onclick="boot()">SYSTEM BOOT</button>
+
+    <div id="app" style="display:none;">
+        <div class="tab-bar">
+            <div class="tab-button active-tab" onclick="switchTab('control')">CONTROL</div>
+            <div class="tab-button" onclick="switchTab('monitor')">MONITOR</div>
+        </div>
+        <div id="control-tab" class="tab-page page-active">
             <button class="report-btn" onclick="openReport()">REPORT</button>
         </div>
-        <div id="monitor-tab" class="rank-list"></div>
+        <div id="monitor-tab" class="tab-page">
+            <div id="rank-list"></div>
+        </div>
     </div>
 
     <script>
         const firebaseConfig = { databaseURL: "https://furocan-hazard-default-rtdb.firebaseio.com/" };
         firebase.initializeApp(firebaseConfig);
         const fbDB = firebase.database();
+        const prefs = ["hokkaido", "tokyo", "okayama", "osaka"];
 
-        const prefs = ["hokkaido", "tokyo", "okayama", "osaka"]; // 全47都道府県分をここに追加
-        
-        function updateData() {
-            let list = [];
-            prefs.forEach(id => {
-                fbDB.ref('areas/' + id).on('value', (s) => {
-                    const data = s.val() || { active_cancels: 0, total_soldiers: 0 };
-                    const rate = data.total_soldiers > 0 ? (data.active_cancels / data.total_soldiers) * 100 : 0;
-                    list.push({ id, ...data, rate });
-                    render(list.sort((a,b) => b.rate - a.rate));
-                });
-            });
+        function boot() {
+            document.getElementById('top-door').classList.add('open-top');
+            document.getElementById('bottom-door').classList.add('open-bottom');
+            document.getElementById('app').style.display = 'block';
+            document.getElementById('boot-btn').style.display = 'none';
         }
 
-        function render(list) {
-            document.getElementById('monitor-tab').innerHTML = list.map(p => `
-                <div class="area-item ${p.rate > 30 ? 'danger' : ''}">
-                    ${p.id.toUpperCase()} <span>${p.rate.toFixed(1)}% (${p.active_cancels}/${p.total_soldiers})</span>
-                </div>
-            `).join('');
+        function switchTab(t) {
+            document.querySelectorAll('.tab-page').forEach(p => p.style.display = 'none');
+            document.getElementById(t + '-tab').style.display = 'block';
         }
 
         function openReport() {
@@ -62,7 +69,25 @@
             }
         }
 
-        updateData();
+        // 全都道府県のデータを常に監視してリスト化
+        let list = [];
+        prefs.forEach(id => {
+            fbDB.ref('areas/' + id).on('value', (s) => {
+                const data = s.val() || { active_cancels: 0, total_soldiers: 1 }; // soldiers0除算回避
+                const rate = (data.active_cancels / (data.total_soldiers || 1)) * 100;
+                list = list.filter(p => p.id !== id);
+                list.push({ id, ...data, rate });
+                render(list.sort((a,b) => b.rate - a.rate));
+            });
+        });
+
+        function render(list) {
+            document.getElementById('rank-list').innerHTML = list.map(p => `
+                <div class="rank-item ${p.rate > 30 ? 'danger' : ''}">
+                    ${p.id.toUpperCase()} <span>${p.rate.toFixed(1)}% (${p.active_cancels}人)</span>
+                </div>
+            `).join('');
+        }
     </script>
 </body>
 </html>
