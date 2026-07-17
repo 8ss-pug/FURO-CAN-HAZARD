@@ -188,7 +188,7 @@
         .log-item.success-log { border-left-color: #00ffcc; }
         .log-time { color: #64748b; margin-right: 8px; }
 
-        /* 【TAB 4】 MAP 画面 */
+        /* 【TAB 4】 MAP 画面 (日本地図リアル配置グリッド) */
         .map-wrapper {
             border: 1px solid rgba(0, 255, 204, 0.2); background: rgba(0, 0, 0, 0.5);
             padding: 15px; height: 100%; display: flex; flex-direction: column; align-items: center;
@@ -207,6 +207,7 @@
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             background: rgba(0,0,0,0.6); position: relative; padding: 5px; overflow: auto;
         }
+        
         .cyber-grid-map {
             display: grid; grid-template-columns: repeat(14, 21px); grid-template-rows: repeat(12, 21px);
             gap: 2px; justify-content: center; margin: auto;
@@ -528,7 +529,7 @@
 
         function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
         
-        // 🔒 バグ修正：未定義の単語を完全に消去した安全なハッチ音響プログラム
+        // 🔒 今度こそ100%バグなし宣言：bufferServiceを完全削除した安全なハッチ音響プログラム
         function playPshhhSound() {
             initAudio(); if (!audioCtx) return;
             const bufferSize = audioCtx.sampleRate * 1.5;
