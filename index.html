@@ -439,7 +439,7 @@
                 <option value="布団との不可侵条約">布団との不可侵条約（既に寝落ち寸前）</option>
                 <option value="水資源の保護">水資源の保護（地球防衛活動）</option>
                 <option value="高熱（正当防衛）">高熱（※正当防衛を主張）</option>
-                <option value="精神的敗北">精神的敗北（シンプルにだるい）</option>
+                <option value="精神的敗北">精神的敗北（シンプルにだだるい）</option>
             </select>
 
             <p style="text-align: left; font-size: 12px; color: #64748b; margin-bottom: 5px;">[ DECONTAMINATION TIME / 次回作戦時刻 ]</p>
@@ -504,6 +504,12 @@
             { id: "nagasaki", name: "NGS", jp: "長崎", x:0, y:9 }, { id: "kagoshima", name: "KGS", jp: "鹿児島", x:1, y:10 },
             { id: "okinawa", name: "OKA", jp: "沖縄", x:0, y:0 }
         ];
+
+        // 🚨 【超重要：大復活】前回のコードで完全に抜け落ちていたアカウント画面の4大変数宣言！
+        const accountModal = document.getElementById('account-modal');
+        const selectPrefEl = document.getElementById('user-prefecture');
+        const submitAccountBtn = document.getElementById('submit-account');
+        const userInfoDisplay = document.getElementById('user-info-display');
 
         const topDoor = document.getElementById('top-door'), bottomDoor = document.getElementById('bottom-door'), bootBtn = document.getElementById('boot-btn');
         const mainPanel = document.getElementById('main-panel'), reportBtn = document.getElementById('trigger-report');
@@ -585,7 +591,6 @@
             }
         }
 
-        // 🛡️ 画面要素を完全に組み立てる関数（Firebaseの接続前に実行させる）
         function buildSystemComponents() {
             areaListEl.innerHTML = "";
             selectPrefEl.innerHTML = '<option value="">現在エリアを選択</option>';
@@ -620,7 +625,6 @@
             });
         }
 
-        // 🛰️ 画面組み立てが完了した後に安全に Firebase サーバーに回線を繋ぐ関数
         function connectFirebaseNetwork() {
             prefectures.forEach(p => {
                 fbDB.ref('areas/' + p.id).on('value', (snapshot) => {
@@ -752,7 +756,6 @@
         function refreshProfilePage() {
             document.getElementById('prof-disp-name').innerText = myNickname || "未登録";
             
-            // 🛡️ 古い残骸データが保存庫に残っていても100%クラッシュさせない安全ガード
             const currentPref = prefectures.find(p => p.id === myPrefID);
             document.getElementById('prof-disp-sector').innerText = currentPref ? `${currentPref.jp}` : "未登録 (再設定してください)";
             document.getElementById('prof-disp-type').innerText = myLikeBath || "未登録";
@@ -768,9 +771,9 @@
             accountModal.style.display = "flex";
         }
 
-        // 🚀 【真の最終大手術】初期化プロトコルのタイミングを完全矯正
-        buildSystemComponents(); // 1. 先に画面のHTML要素を100%完璧に組み立てる
-        applySystemStatus();    // 2. 画面のクリーン/ハザード状態を適用
+        // 初期化プロトコル
+        buildSystemComponents(); 
+        applySystemStatus();    
 
         submitAccountBtn.addEventListener('click', () => {
             const nicknameInput = document.getElementById('user-nickname').value.trim();
@@ -804,7 +807,7 @@
             setTimeout(() => {
                 mainPanel.classList.add('panel-visible');
                 
-                // 3. ハッチが無事に開いた『直後』に、Firebaseの超高速リアルタイム通信ルートを安全に開通させる！
+                // 通信回線接続
                 connectFirebaseNetwork();
 
                 const matched = prefectures.find(p=>p.id===myPrefID);
