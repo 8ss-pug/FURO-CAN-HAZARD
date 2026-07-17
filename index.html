@@ -107,7 +107,7 @@
             gap: 12px;
             flex-grow: 1;
             margin: 10px 0;
-            min-height: 0; /* スクロール破綻防止 */
+            min-height: 0;
         }
 
         .center-console {
@@ -133,6 +133,19 @@
         }
         .report-btn:hover { box-shadow: 0 0 45px rgba(0, 255, 204, 0.5); background: rgba(0, 255, 204, 0.08); }
 
+        /* 🔒 ボタンロック時のデザイン */
+        .report-btn:disabled {
+            border-color: #334155;
+            color: #475569;
+            background: #0f172a;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .report-btn:disabled::before {
+            animation: none;
+            border-color: rgba(51, 65, 85, 0.3);
+        }
+
         .next-schedule-display {
             margin-top: 15px; font-size: 11px; color: #f87171; border: 1px solid #ef4444;
             padding: 4px 12px; background: rgba(239, 68, 68, 0.1); border-radius: 3px;
@@ -140,6 +153,7 @@
         }
         .rank-display {
             margin-top: 10px; font-size: 12px; color: #00ffcc; letter-spacing: 1px;
+            font-weight: bold;
         }
 
         /* 📅 敗北履歴ログエリア */
@@ -278,13 +292,13 @@
                 <p class="console-tag">[ MISSION REPORT SWITCH ]</p>
                 <button class="report-btn" id="trigger-report">REPORT</button>
                 <div class="next-schedule-display" id="next-schedule">NEXT DECONTAMINATION: --:--</div>
-                <div class="rank-display" id="rank-badge">RANK: [ 浄化神 - PURITY GOD ]</div>
+                <div class="rank-display" id="rank-badge">RANK: [ 一般市民 - CITIZEN ]</div>
             </div>
 
             <div class="log-console">
                 <p class="log-title">[ MISSION LOG LIST / 行動履歴 ]</p>
                 <div class="log-list" id="user-log-list">
-                    <p class="log-item success-log" style="border:none; color:#64748b; text-align:center; margin-top:20px;">ログデータはありません</p>
+                    <p class="log-item success-log" id="no-log-msg" style="border:none; color:#64748b; text-align:center; margin-top:20px;">ログデータはありません</p>
                 </div>
             </div>
         </div>
@@ -341,9 +355,9 @@
     </div>
 
     <script>
-        // 🛰️ 共同テストサーバーに接続
+        // 🛰️ 共同テストサーバーから【完全にあなたたち専用のプライベート空間】に変更！
         const gun = Gun(['https://gun-manhattan.herokuapp.com/gun']);
-        const db = gun.get('furocan-hazard-global-2026');
+        const db = gun.get('furocan-hazard-private-okayama-999'); // 👈 ここを自分たちの合言葉にしました
 
         const prefectures = [
             { id: "hokkaido", name: "HOKKAIDO", jp: "ホッカイドウ", base: 15 }, { id: "aomori", name: "AOMORI", jp: "アオモリ", base: 5 },
@@ -385,6 +399,10 @@
         let audioCtx = null;
         let localUserStatus = "CLEAN";
 
+        // 🛡️ ロカルストレージ（スマホの保存庫）を使った1日1回制限＆連続日数システム
+        let consecutiveDays = parseInt(localStorage.getItem('furo_consecutive_days')) || 0; // 連続入浴日数
+        let lastReportDate = localStorage.getItem('furo_last_report_date') || ""; // 最後に報告した日 (YYYY-MM-DD)
+
         function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
         function playPshhhSound() {
             initAudio(); if (!audioCtx) return;
@@ -416,6 +434,7 @@
             }
         }
 
+        // 🗺️ 地図の初期描画
         function buildMap() {
             areaListEl.innerHTML = "";
             totalCountEl.innerText = totalCount.toLocaleString();
@@ -438,6 +457,7 @@
             db.get('totalCount').on((val) => { totalCountEl.innerText = (val || 0).toLocaleString(); });
         }
 
+        // データベースに初期値を登録する（完全に新サーバーを立ち上げた時だけ）
         function checkAndInitDatabase() {
             db.get('initialized').once((init) => {
                 if (!init) {
@@ -451,9 +471,11 @@
             });
         }
 
-        // 📅 ログ表示を更新する関数
+        // 📅 行動履歴ログ表示
         function addLog(type, reason = "", time = "") {
-            if(userLogList.innerHTML.includes("ログデータはありません")) userLogList.innerHTML = "";
+            const noLogMsg = document.getElementById('no-log-msg');
+            if(noLogMsg) noLogMsg.remove();
+            
             const now = new Date();
             const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
             const logItem = document.createElement('div');
@@ -467,36 +489,109 @@
             userLogList.insertBefore(logItem, userLogList.firstChild);
         }
 
-        buildMap(); checkAndInitDatabase();
+        // 🛡️ 1日1回のロック状態を確認する関数
+        function checkDailyLock() {
+            const todayStr = getTodayString();
+            if (lastReportDate === todayStr) {
+                // すでに本日報告済みの場合は、ボタンを無効化してロックする
+                reportBtn.disabled = true;
+                reportBtn.innerText = "LOCKED";
+                document.querySelector('.console-tag').innerText = "[ 本日の任務は完了しました ]";
+            } else {
+                reportBtn.disabled = false;
+                reportBtn.innerText = "REPORT";
+                document.querySelector('.console-tag').innerText = "[ MISSION REPORT SWITCH ]";
+            }
+        }
 
+        // 今日の日付を「YYYY-MM-DD」形式で取得する便利関数
+        function getTodayString() {
+            const d = new Date();
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        }
+
+        // 🎖️ 連続日数に応じたランク（称号）判定
+        function updateRankDisplay() {
+            if (localUserStatus === "HAZARD") {
+                rankBadge.innerText = "RANK: [ 廃液生命体 - SLUDGE LIFE ]";
+                rankBadge.style.color = "#ef4444";
+            } else {
+                if (consecutiveDays >= 7) {
+                    rankBadge.innerText = `RANK: [ 浄化神 - PURITY GOD ] (連続 ${consecutiveDays}日)`;
+                    rankBadge.style.color = "#00ffcc";
+                } else if (consecutiveDays >= 3) {
+                    rankBadge.innerText = `RANK: [ 除染官 - DECONTAMINATOR ] (連続 ${consecutiveDays}日)`;
+                    rankBadge.style.color = "#88ffcc";
+                } else {
+                    rankBadge.innerText = `RANK: [ 一般市民 - CITIZEN ] (連続 ${consecutiveDays}日)`;
+                    rankBadge.style.color = "#64748b";
+                }
+            }
+        }
+
+        // 🚀 アプリの初期化
+        buildMap(); 
+        checkAndInitDatabase();
+        updateRankDisplay();
+        checkDailyLock();
+
+        // 🚪 ハッチを開く
         bootBtn.addEventListener('click', () => {
             playPshhhSound(); bootBtn.style.display = 'none';
             topDoor.classList.add('open-top'); bottomDoor.classList.add('open-bottom');
             setTimeout(() => { mainPanel.classList.add('panel-visible'); }, 500);
         });
 
-        reportBtn.addEventListener('click', () => { playBeep(880, 0.1); reportModal.style.display = 'flex'; });
+        // 🔘 報告ボタン
+        reportBtn.addEventListener('click', () => {
+            playBeep(880, 0.1); reportModal.style.display = 'flex';
+        });
 
-        // 🟢 入浴成功
+        // 🟢 入浴成功 (ENTERED BATH)
         successBtn.addEventListener('click', () => {
             playBeep(1200, 0.15);
             mainPanel.classList.remove('hazard-alert-bg'); mainStatusHeader.classList.remove('hazard-alert-border');
             alertStatus.innerText = 'STATUS: CLEAN'; alertStatus.style.background = '#00ffcc'; alertStatus.style.color = '#000';
             alertStatus.classList.remove('hazard-badge');
-            rankBadge.innerText = "RANK: [ 浄化神 - PURITY GOD ]"; rankBadge.style.color = "#00ffcc";
+            
+            // 🔒 1日1回の報告を完了としてロック
+            const todayStr = getTodayString();
+            localStorage.setItem('furo_last_report_date', todayStr);
+            lastReportDate = todayStr;
+
+            // 🎖️ 連続日数の更新計算
+            consecutiveDays += 1;
+            localStorage.setItem('furo_consecutive_days', consecutiveDays);
+
+            localUserStatus = "CLEAN";
+            updateRankDisplay();
+            checkDailyLock();
+
             nextSchedule.style.display = 'none'; reportModal.style.display = 'none';
 
             addLog('success');
-            if (localUserStatus === "HAZARD") { decrementPrefecture('okayama'); localUserStatus = "CLEAN"; }
+            decrementPrefecture('okayama'); // 自分のエリア（オカヤマ）の風呂キャン率を減らす
         });
 
-        // 🔴 風呂キャン
+        // 🔴 風呂キャン (CANCELLED)
         failBtn.addEventListener('click', () => {
             playAlarmSound();
             mainPanel.classList.add('hazard-alert-bg'); mainStatusHeader.classList.add('hazard-alert-border');
             alertStatus.innerText = 'WARNING: HAZARD DETECTED'; alertStatus.style.background = '#ef4444'; alertStatus.style.color = '#fff';
             alertStatus.classList.add('hazard-badge');
-            rankBadge.innerText = "RANK: [ 廃液生命体 - SLUDGE LIFE ]"; rankBadge.style.color = "#ef4444";
+
+            // 🔒 1日1回の報告を完了としてロック
+            const todayStr = getTodayString();
+            localStorage.setItem('furo_last_report_date', todayStr);
+            lastReportDate = todayStr;
+
+            // 🎖️ 連続日数を完全にリセット
+            consecutiveDays = 0;
+            localStorage.setItem('furo_consecutive_days', 0);
+
+            localUserStatus = "HAZARD";
+            updateRankDisplay();
+            checkDailyLock();
 
             reportModal.style.display = 'none';
             setTimeout(() => { failedModal.style.display = 'flex'; }, 300); 
@@ -517,9 +612,10 @@
             failedModal.style.display = 'none';
 
             addLog('fail', reason, targetTime);
-            if (localUserStatus === "CLEAN") { incrementPrefecture('okayama'); localUserStatus = "HAZARD"; }
+            incrementPrefecture('okayama'); // 自分のエリア（オカヤマ）の風呂キャン率を上げる
         });
 
+        // データベース制御用関数
         function incrementPrefecture(id) {
             db.get('prefectures').get(id).once((data) => {
                 let currentCount = (data ? data.count : 0) + 1;
@@ -538,6 +634,7 @@
             db.get('totalCount').once((total) => { db.get('totalCount').put(Math.max(0, (total || 0) - 1)); });
         }
 
+        // 全国リアルタイム監視の自動ゆらぎシステム
         setInterval(() => {
             const randomPref = prefectures[Math.floor(Math.random() * prefectures.length)];
             if (randomPref.id !== 'okayama') {
