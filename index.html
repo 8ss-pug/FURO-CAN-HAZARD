@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>風呂キャン・ハザード (FURO-CAN HAZARD)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=DotGothic16&display=swap" rel="stylesheet">
+    <style>
+        /* --- 全体の電脳サイバーデザイン --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Share Tech Mono', 'DotGothic16', sans-serif;
+        }
+        body, html {
+            height: 100%;
+            background-color: #03060a;
+            color: #00ffcc;
+            overflow: hidden;
+        }
+
+        /* --- 🚀 宇宙船のハッチ（上下スライドドア） --- */
+        .door {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(135deg, #1b2330, #090d16);
+            border: 4px solid #1f2937;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 1.2s cubic-bezier(0.85, 0, 0.15, 1);
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.9);
+        }
+        .door-top {
+            top: 0;
+            border-bottom: 5px double #00ffcc;
+        }
+        .door-bottom {
+            bottom: 0;
+            border-top: 5px double #00ffcc;
+        }
+        .door::after {
+            content: "• • • SECURITY LOCK: SYSTEM ONLINE • • •";
+            color: #ef4444;
+            font-size: 14px;
+            letter-spacing: 3px;
+        }
+
+        /* アラート起動ボタン */
+        #boot-btn {
+            position: absolute;
+            z-index: 11;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 16px 35px;
+            background-color: #ef4444;
+            color: #fff;
+            border: 2px solid #f87171;
+            border-radius: 4px;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 0 25px #ef4444;
+            font-weight: bold;
+            transition: all 0.3s;
+            letter-spacing: 3px;
+        }
+        #boot-btn:hover {
+            background-color: #f87171;
+            box-shadow: 0 0 35px #f87171;
+        }
+
+        /* ハッチが開いたときの状態 */
+        .open-top {
+            transform: translateY(-100%);
+        }
+        .open-bottom {
+            transform: translateY(100%);
+        }
+
+        /* --- 🛰️ メイン画面（お風呂防衛指令室） --- */
+        .control-panel {
+            width: 100%;
+            height: 100%;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: radial-gradient(circle, #09101d 0%, #03060a 100%);
+            opacity: 0;
+            transition: opacity 1s ease, background 0.3s ease;
+        }
+        .panel-visible {
+            opacity: 1;
+        }
+
+        /* 🚨 風呂キャン警戒モード時の赤点滅背景 */
+        .hazard-alert-bg {
+            background: radial-gradient(circle, #2d0a0a 0%, #03060a 100%) !important;
+            animation: red-flash-bg 1s infinite alternate;
+        }
+
+        /* ① 画面最上部：ステータスバー */
+        .status-header {
+            border: 1px solid #00ffcc;
+            padding: 8px 12px;
+            background: rgba(0, 255, 204, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+        .status-header.hazard-alert-border {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+        .status-title {
+            font-size: 13px;
+            letter-spacing: 2px;
+            color: #00ffcc;
+        }
+        .status-badge {
+            background: #00ffcc;
+            color: #000;
+            padding: 3px 10px;
+            font-weight: bold;
+            font-size: 11px;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+        .status-badge.hazard-badge {
+            background: #ef4444;
+            color: #fff;
+            animation: blink 0.5s infinite alternate;
+        }
+
+        /* ② 画面中央：巨大な報告（REPORT）エリア */
+        .center-console {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            margin: 10px 0;
+        }
+        .console-tag {
+            margin-bottom: 15px;
+            font-size: 11px;
+            color: #88ffcc;
+            letter-spacing: 3px;
+        }
+        .report-btn {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #0f172a 0%, #020617 100%);
+            border: 4px solid #00ffcc;
+            color: #00ffcc;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 30px rgba(0, 255, 204, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            letter-spacing: 4px;
+            padding-left: 4px;
+        }
+        .report-btn::before {
+            content: '';
+            position: absolute;
+            top: -10px; left: -10px; right: -10px; bottom: -10px;
+            border-radius: 50%;
+            border: 1px dashed rgba(0, 255, 204, 0.4);
+            animation: spin 12s linear infinite;
+        }
+        .report-btn:hover {
+            box-shadow: 0 0 45px rgba(0, 255, 204, 0.5);
+            background: rgba(0, 255, 204, 0.08);
+        }
+
+        /* 次回作戦予定の表示エリア */
+        .next-schedule-display {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #f87171;
+            border: 1px solid #ef4444;
+            padding: 6px 16px;
+            background: rgba(239, 68, 68, 0.1);
+            border-radius: 3px;
+            display: none;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+
+        /* ③ 画面下部：リアルタイム全国汚染監視モニター */
+        .hazard-map-box {
+            border: 1px dashed #00ffcc;
+            background: rgba(0, 0, 0, 0.75);
+            height: 220px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .map-grid {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(0, 255, 204, 0.03) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0, 255, 204, 0.03) 1px, transparent 1px);
+            background-size: 15px 15px;
+            pointer-events: none;
+        }
+        .map-title-bar {
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #00ffcc;
+            border-bottom: 1px solid rgba(0, 255, 204, 0.2);
+            padding-bottom: 5px;
+            letter-spacing: 2px;
+        }
+        
+        /* 47都道府県スクロールエリア */
+        .area-scroll-container {
+            z-index: 1;
+            flex-grow: 1;
+            overflow-y: auto;
+            margin-top: 8px;
+            padding-right: 5px;
+        }
+        .area-scroll-container::-webkit-scrollbar {
+            width: 4px;
+        }
+        .area-scroll-container::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+        }
+        .area-scroll-container::-webkit-scrollbar-thumb {
+            background: #00ffcc;
+        }
+
+        .area-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 6px;
+        }
+        .area-item {
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.01);
+            padding: 6px 10px;
+            border-left: 3px solid #00ffcc;
+            transition: all 0.3s;
+        }
+        .area-item.danger-alert {
+            border-left-color: #ef4444;
+            background: rgba(239, 68, 68, 0.06);
+        }
+        .area-name {
+            color: #88ffcc;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        .area-jp {
+            font-size: 10px;
+            color: #4b5563;
+            margin-left: 6px;
+            font-weight: normal;
+        }
+        .area-stats {
+            display: flex;
+            gap: 15px;
+        }
+        .area-count {
+            color: #64748b;
+            font-size: 11px;
+        }
+        .area-val {
+            font-weight: bold;
+            width: 50px;
+            text-align: right;
+        }
+
+        /* --- 💥 モーダル --- */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 4, 8, 0.96);
+            z-index: 20;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-content {
+            background: #080f1a;
+            border: 1px solid #00ffcc;
+            padding: 30px 25px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 0 35px rgba(0, 255, 204, 0.15);
+            text-align: center;
+        }
+        .modal-title {
+            font-size: 16px;
+            color: #00ffcc;
+            letter-spacing: 3px;
+            margin-bottom: 5px;
+        }
+        .modal-subtitle {
+            color: #475569;
+            margin-bottom: 25px;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+        .choices-box {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .choice-btn {
+            position: relative;
+            padding: 16px 15px 16px 45px;
+            border: 1px solid #1e293b;
+            background: #0b1320;
+            color: #64748b;
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 1.5px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .choice-btn::before {
+            content: '';
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #1e293b;
+            transition: all 0.2s ease;
+        }
+
+        .btn-success:hover {
+            border-color: #00ffcc;
+            color: #00ffcc;
+            background: rgba(0, 255, 204, 0.03);
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.1);
+        }
+        .btn-success:hover::before {
+            background: #00ffcc;
+            box-shadow: 0 0 10px #00ffcc;
+        }
+        .btn-danger:hover {
+            border-color: #ef4444;
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.03);
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.1);
+        }
+        .btn-danger:hover::before {
+            background: #ef4444;
+            box-shadow: 0 0 10px #ef4444;
+            animation: pulse-red 0.5s infinite alternate;
+        }
+
+        /* --- 🛑 風呂キャン詳細報告画面 --- */
+        .danger-border {
+            border-color: #ef4444 !important;
+            box-shadow: 0 0 35px rgba(239, 68, 68, 0.15) !important;
+        }
+        .reason-select {
+            width: 100%;
+            padding: 12px;
+            background: #03060a;
+            border: 1px solid #ef4444;
+            color: #ef4444;
+            font-size: 13px;
+            margin-bottom: 20px;
+            outline: none;
+            cursor: pointer;
+        }
+        .time-input-box {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        .time-input {
+            width: 70px;
+            padding: 8px;
+            background: #03060a;
+            border: 1px solid #ef4444;
+            color: #fff;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            outline: none;
+        }
+        .time-label {
+            align-self: center;
+            color: #ef4444;
+            font-weight: bold;
+        }
+        .submit-failed-btn {
+            width: 100%;
+            padding: 15px;
+            background: #ef4444;
+            color: #000;
+            border: none;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
+            transition: all 0.2s;
+            letter-spacing: 1px;
+        }
+        .submit-failed-btn:hover {
+            background: #f87171;
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.5);
+        }
+
+        /* --- アニメーション --- */
+        @keyframes blink {
+            0% { opacity: 0.2; }
+            100% { opacity: 1; }
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes pulse-red {
+            0% { transform: translateY(-50%) scale(0.8); opacity: 0.5; }
+            100% { transform: translateY(-50%) scale(1.2); opacity: 1; }
+        }
+        @keyframes red-flash-bg {
+            0% { background: radial-gradient(circle, #100404 0%, #03060a 100%); }
+            100% { background: radial-gradient(circle, #2a0808 0%, #03060a 100%); }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
+</head>
+<body>
+
+    <div class="door door-top" id="top-door"></div>
+    <div class="door door-bottom" id="bottom-door"></div>
+    
+    <button id="boot-btn">SYSTEM BOOT</button>
+
+    <div class="control-panel" id="main-panel">
+        <div class="status-header" id="main-status-header">
+            <span class="status-title">[ GLOBAL FURO-CAN NETWORK MONITORING ]</span>
+            <span class="status-badge" id="alert-status">STATUS: CLEAN</span>
+        </div>
+
+        <div class="center-console">
+            <p class="console-tag">[ MISSION REPORT SWITCH ]</p>
+            <button class="report-btn" id="trigger-report">REPORT</button>
+            
+            <div class="next-schedule-display" id="next-schedule">
+                NEXT DECONTAMINATION: --:--
+            </div>
+        </div>
+
+        <div class="hazard-map-box">
+            <div class="map-grid"></div>
+            <div class="map-title-bar">
+                <span>[ REGIONAL INFECTION STATUS ]</span>
+                <span>TOTAL: <span id="total-hazard-count" style="font-weight: bold;">0</span></span>
+            </div>
+            
+            <div class="area-scroll-container">
+                <div class="area-list" id="japan-area-list">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="report-modal">
+        <div class="modal-content">
+            <p class="modal-title">MISSION STATUS CHECK</p>
+            <p class="modal-subtitle">本日の防衛任務、結果をシステムに入力せよ。</p>
+            <div class="choices-box">
+                <button class="choice-btn btn-success" id="success-btn">ENTERED BATH (入浴済)</button>
+                <button class="choice-btn btn-danger" id="fail-btn">CANCELLED (風呂キャン)</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="failed-detail-modal">
+        <div class="modal-content danger-border">
+            <p class="modal-title" style="color: #ef4444; margin-bottom: 10px;">[ DISASTER TRANSMISSION ]</p>
+            <p class="modal-subtitle" style="margin-bottom: 20px;">風呂キャン敗北原因と、次回の除染予定時刻を設定せよ。</p>
+            
+            <p style="text-align: left; font-size: 11px; color: #64748b; margin-bottom: 5px;">[ CAUSE OF FAILURE / 敗北原因 ]</p>
+            <select class="reason-select" id="failed-reason">
+                <option value="gravity">重力の局所的増加（体が動かない）</option>
+                <option value="treaty">布団との不可侵条約（既に寝落ち寸前）</option>
+                <option value="eco">水資源 of 保護（地球防衛活動）</option>
+                <option value="fever">高熱（※正当防衛を主張）</option>
+                <option value="lazy">精神的敗北（シンプルにだるい）</option>
+            </select>
+
+            <p style="text-align: left; font-size: 11px; color: #64748b; margin-bottom: 5px;">[ DECONTAMINATION TIME / 次回作戦時刻 ]</p>
+            <div class="time-input-box">
+                <input type="number" class="time-input" id="time-hour" placeholder="23" min="0" max="23">
+                <span class="time-label">:</span>
+                <input type="number" class="time-input" id="time-min" placeholder="00" min="0" max="59">
+            </div>
+
+            <button class="submit-failed-btn" id="submit-failed-report">SEND PROTOCOL (報告データを送信)</button>
+        </div>
+    </div>
+
+    <script>
+        // 🛰️ 分散型リアルタイムデータベース初期化（お小遣い稼ぎWebアプリ用の完全無料連動サーバー）
+        const gun = Gun(['https://gun-manhattan.herokuapp.com/gun']);
+        const db = gun.get('furocan-hazard-global-2026');
+
+        const prefectures = [
+            { id: "hokkaido", name: "HOKKAIDO", jp: "ホッカイドウ", base: 15 },
+            { id: "aomori", name: "AOMORI", jp: "アオモリ", base: 5 },
+            { id: "iwate", name: "IWATE", jp: "イワテ", base: 4 },
+            { id: "miyagi", name: "MIYAGI", jp: "ミヤギ", base: 8 },
+            { id: "akita", name: "AKITA", jp: "アキタ", base: 3 },
+            { id: "yamagata", name: "YAMAGATA", jp: "ヤマガタ", base: 4 },
+            { id: "fukushima", name: "FUKUSHIMA", jp: "フクシマ", base: 6 },
+            { id: "ibaraki", name: "IBARAKI", jp: "イバラキ", base: 10 },
+            { id: "tochigi", name: "TOCHIGI", jp: "トチギ", base: 7 },
+            { id: "gunma", name: "GUNMA", jp: "グンマ", base: 6 },
+            { id: "saitama", name: "SAITAMA", jp: "サイタマ", base: 28 },
+            { id: "chiba", name: "CHIBA", jp: "チバ", base: 25 },
+            { id: "tokyo", name: "TOKYO", jp: "トウキョウ", base: 48 },
+            { id: "kanagawa", name: "KANAGAWA", jp: "カナガワ", base: 35 },
+            { id: "niigata", name: "NIIGATA", jp: "ニイガタ", base: 8 },
+            { id: "toyama", name: "TOYAMA", jp: "トヤマ", base: 3 },
+            { id: "ishikawa", name: "ISHIKAWA", jp: "イシカワ", base: 4 },
+            { id: "fukui", name: "FUKUI", jp: "フクイ", base: 3 },
+            { id: "yamanashi", name: "YAMANASHI", jp: "ヤマナシ", base: 4 },
+            { id: "nagano", name: "NAGANO", jp: "ナガノ", base: 7 },
+            { id: "gifu", name: "GIFU", jp: "ギフ", base: 8 },
+            { id: "shizuoka", name: "SHIZUOKA", jp: "シズオカ", base: 14 },
+            { id: "aichi", name: "AICHI", jp: "アイチ", base: 25 },
+            { id: "mie", name: "MIE", jp: "ミエ", base: 5 },
+            { id: "shiga", name: "SHIGA", jp: "シガ", base: 5 },
+            { id: "kyoto", name: "KYOTO", jp: "キョウト", base: 12 },
+            { id: "osaka", name: "OSAKA", jp: "オオサカ", base: 42 },
+            { id: "hyogo", name: "HYOGO", jp: "ヒョーゴ", base: 20 },
+            { id: "nara", name: "NARA", jp: "ナラ", base: 4 },
+            { id: "wakayama", name: "WAKAYAMA", jp: "ワカヤマ", base: 3 },
+            { id: "tottori", name: "TOTTORI", jp: "トットリ", base: 2 },
+            { id: "shimane", name: "SHIMANE", jp: "シマネ", base: 2 },
+            { id: "okayama", name: "OKAYAMA", jp: "オカヤマ", base: 7 },
+            { id: "hiroshima", name: "HIROSHIMA", jp: "ヒロシマ", base: 11 },
+            { id: "yamaguchi", name: "YAMAGUCHI", jp: "ヤマグチ", base: 5 },
+            { id: "tokushima", name: "TOKUSHIMA", jp: "トクシマ", base: 3 },
+            { id: "kagawa", name: "KAGAWA", jp: "カガワ", base: 4 },
+            { id: "ehime", name: "EHIME", jp: "エヒメ", base: 5 },
+            { id: "kochi", name: "KOCHI", jp: "コーチ", base: 3 },
+            { id: "fukuoka", name: "FUKUOKA", jp: "フクオカ", base: 18 },
+            { id: "saga", name: "SAGA", jp: "サガ", base: 3 },
+            { id: "nagasaki", name: "NAGASAKI", jp: "ナガサキ", base: 5 },
+            { id: "kumamoto", name: "KUMAMOTO", jp: "クマモト", base: 7 },
+            { id: "oita", name: "OITA", jp: "オオイタ", base: 4 },
+            { id: "miyazaki", name: "MIYAZAKI", jp: "ミヤザキ", base: 4 },
+            { id: "kagoshima", name: "KAGOSHIMA", jp: "カゴシマ", base: 6 },
+            { id: "okinawa", name: "OKINAWA", jp: "オキナワ", base: 8 }
+        ];
+
+        const topDoor = document.getElementById('top-door');
+        const bottomDoor = document.getElementById('bottom-door');
+        const bootBtn = document.getElementById('boot-btn');
+        const mainPanel = document.getElementById('main-panel');
+        const reportBtn = document.getElementById('trigger-report');
+        
+        const reportModal = document.getElementById('report-modal');
+        const failedModal = document.getElementById('failed-detail-modal');
+        
+        const successBtn = document.getElementById('success-btn');
+        const failBtn = document.getElementById('fail-btn');
+        const submitFailedBtn = document.getElementById('submit-failed-report');
+        
+        const alertStatus = document.getElementById('alert-status');
+        const nextSchedule = document.getElementById('next-schedule');
+        const totalCountEl = document.getElementById('total-hazard-count');
+        const areaListEl = document.getElementById('japan-area-list');
+        const mainStatusHeader = document.getElementById('main-status-header');
+
+        let audioCtx = null;
+        let localUserStatus = "CLEAN"; // CLEAN or HAZARD
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playPshhhSound() {
+            initAudio();
+            if (!audioCtx) return;
+            const bufferSize = audioCtx.sampleRate * 1.5;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = Math.random() * 2 - 1;
+            }
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = buffer;
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.value = 800;
+            const gain = audioCtx.createGain();
+            gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1.3);
+            noise.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioCtx.destination);
+            noise.start();
+        }
+
+        function playBeep(freq, duration) {
+            initAudio();
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, duration);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        }
+
+        function playAlarmSound() {
+            initAudio();
+            if (!audioCtx) return;
+            const now = audioCtx.currentTime;
+            for (let i = 0; i < 3; i++) {
+                const startTime = now + (i * 0.4);
+                const osc1 = audioCtx.createOscillator();
+                const osc2 = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc1.type = 'sawtooth';
+                osc1.frequency.setValueAtTime(180, startTime); 
+                osc2.type = 'sawtooth';
+                osc2.frequency.setValueAtTime(183, startTime); 
+                gain.gain.setValueAtTime(0, startTime);
+                gain.gain.linearRampToValueAtTime(0.08, startTime + 0.05);
+                gain.gain.exponentialRampToValueAtTime(0.01, startTime + 0.35);
+                const lp = audioCtx.createBiquadFilter();
+                lp.type = 'lowpass';
+                lp.frequency.setValueAtTime(800, startTime);
+                osc1.connect(lp);
+                osc2.connect(lp);
+                lp.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc1.start(startTime);
+                osc2.start(startTime);
+                osc1.stop(startTime + 0.4);
+                osc2.stop(startTime + 0.4);
+            }
+        }
+
+        // 🗺️ 地図構築
+        function buildMap() {
+            areaListEl.innerHTML = "";
+            prefectures.forEach(p => {
+                const item = document.createElement('div');
+                item.className = 'area-item';
+                item.id = `area-${p.id}`;
+                item.innerHTML = `
+                    <span class="area-name">${p.name} <span class="area-jp">(${p.jp})</span></span>
+                    <div class="area-stats">
+                        <span class="area-count" id="count-${p.id}">0</span>
+                        <span class="area-val" id="val-${p.id}">0%</span>
+                    </div>
+                `;
+                areaListEl.appendChild(item);
+                
+                // データベース上のリアル値の変更を監視して、UIを自動連動更新
+                db.get('prefectures').get(p.id).on((data) => {
+                    if (data) {
+                        const count = data.count || 0;
+                        const rate = data.rate || 0;
+                        document.getElementById(`count-${p.id}`).innerText = count.toLocaleString();
+                        document.getElementById(`val-${p.id}`).innerText = `${rate}%`;
+                        const itemEl = document.getElementById(`area-${p.id}`);
+                        if (rate >= 30) {
+                            itemEl.classList.add('danger-alert');
+                        } else {
+                            itemEl.classList.remove('danger-alert');
+                        }
+                    }
+                });
+            });
+
+            // 全国合計値の監視
+            db.get('totalCount').on((val) => {
+                totalCountEl.innerText = (val || 0).toLocaleString();
+            });
+        }
+
+        // データベースに初期値を登録する（まだデータが無い時だけ）
+        function checkAndInitDatabase() {
+            db.get('initialized').once((init) => {
+                if (!init) {
+                    let total = 0;
+                    prefectures.forEach(p => {
+                        db.get('prefectures').get(p.id).put({ count: p.base, rate: parseFloat((p.base * 2.5).toFixed(1)) });
+                        total += p.base;
+                    });
+                    db.get('totalCount').put(total);
+                    db.get('initialized').put(true);
+                }
+            });
+        }
+
+        buildMap();
+        checkAndInitDatabase();
+
+        // 🚪 ハッチを開く
+        bootBtn.addEventListener('click', () => {
+            playPshhhSound();
+            bootBtn.style.display = 'none';
+            topDoor.classList.add('open-top');
+            bottomDoor.classList.add('open-bottom');
+            setTimeout(() => {
+                mainPanel.classList.add('panel-visible');
+            }, 500);
+        });
+
+        // 🔘 REPORTボタン
+        reportBtn.addEventListener('click', () => {
+            playBeep(880, 0.1);
+            reportModal.style.display = 'flex';
+        });
+
+        // 🟢 お風呂成功 (ENTERED BATH)
+        successBtn.addEventListener('click', () => {
+            playBeep(1200, 0.15);
+            
+            mainPanel.classList.remove('hazard-alert-bg');
+            mainStatusHeader.classList.remove('hazard-alert-border');
+            
+            alertStatus.innerText = 'STATUS: CLEAN';
+            alertStatus.style.background = '#00ffcc';
+            alertStatus.style.color = '#000';
+            alertStatus.classList.remove('hazard-badge');
+            
+            nextSchedule.style.display = 'none';
+            reportModal.style.display = 'none';
+
+            // データベースのオカヤマの「本物の値」を減少させる (-1)
+            if (localUserStatus === "HAZARD") {
+                decrementPrefecture('okayama');
+                localUserStatus = "CLEAN";
+            }
+        });
+
+        // 🔴 風呂キャン (CANCELLED)
+        failBtn.addEventListener('click', () => {
+            playAlarmSound(); 
+            
+            mainPanel.classList.add('hazard-alert-bg');
+            mainStatusHeader.classList.add('hazard-alert-border');
+            
+            alertStatus.innerText = 'WARNING: HAZARD DETECTED';
+            alertStatus.style.background = '#ef4444';
+            alertStatus.style.color = '#fff';
+            alertStatus.classList.add('hazard-badge');
+
+            reportModal.style.display = 'none';
+            
+            setTimeout(() => {
+                failedModal.style.display = 'flex';
+            }, 300); 
+        });
+
+        // ✉️ 風呂キャン詳細送信
+        submitFailedBtn.addEventListener('click', () => {
+            playBeep(600, 0.4);
+            
+            let hour = document.getElementById('time-hour').value || '23';
+            let min = document.getElementById('time-min').value || '00';
+            hour = hour.toString().padStart(2, '0');
+            min = min.toString().padStart(2, '0');
+            
+            nextSchedule.innerText = `NEXT DECONTAMINATION: ${hour}:${min}`;
+            nextSchedule.style.display = 'block';
+            failedModal.style.display = 'none';
+
+            // データベースのオカヤマの「本物の値」を増加させる (+1)
+            if (localUserStatus === "CLEAN") {
+                incrementPrefecture('okayama');
+                localUserStatus = "HAZARD";
+            }
+        });
+
+        // データベースに数値を増やす書き込み処理
+        function incrementPrefecture(id) {
+            db.get('prefectures').get(id).once((data) => {
+                let currentCount = (data ? data.count : 0) + 1;
+                let currentRate = parseFloat(Math.min(100, currentCount * 2.5).toFixed(1));
+                db.get('prefectures').get(id).put({ count: currentCount, rate: currentRate });
+            });
+            db.get('totalCount').once((total) => {
+                db.get('totalCount').put((total || 0) + 1);
+            });
+        }
+
+        // データベースに数値を減らす書き込み処理
+        function decrementPrefecture(id) {
+            db.get('prefectures').get(id).once((data) => {
+                let currentCount = Math.max(0, (data ? data.count : 0) - 1);
+                let currentRate = parseFloat(Math.min(100, currentCount * 2.5).toFixed(1));
+                db.get('prefectures').get(id).put({ count: currentCount, rate: currentRate });
+            });
+            db.get('totalCount').once((total) => {
+                db.get('totalCount').put(Math.max(0, (total || 0) - 1));
+            });
+        }
+    </script>
+</body>
+</html>
