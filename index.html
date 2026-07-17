@@ -207,7 +207,6 @@
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             background: rgba(0,0,0,0.6); position: relative; padding: 5px; overflow: auto;
         }
-        
         .cyber-grid-map {
             display: grid; grid-template-columns: repeat(14, 21px); grid-template-rows: repeat(12, 21px);
             gap: 2px; justify-content: center; margin: auto;
@@ -529,7 +528,6 @@
 
         function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
         
-        // 🔒 今度こそ100%バグなし宣言：bufferServiceを完全削除した安全なハッチ音響プログラム
         function playPshhhSound() {
             initAudio(); if (!audioCtx) return;
             const bufferSize = audioCtx.sampleRate * 1.5;
@@ -747,8 +745,10 @@
 
         function refreshProfilePage() {
             document.getElementById('prof-disp-name').innerText = myNickname || "未登録";
+            
+            // 🛡️ 【最重要セーフティ】過去の古いデータ（カタカナ等）が混ざっていても絶対にクラッシュさせない安全フィルター
             const currentPref = prefectures.find(p => p.id === myPrefID);
-            document.getElementById('prof-disp-sector').innerText = currentPref ? `${currentPref.jp}` : "未登録";
+            document.getElementById('prof-disp-sector').innerText = currentPref ? `${currentPref.jp}` : "未登録 (再設定してください)";
             document.getElementById('prof-disp-type').innerText = myLikeBath || "未登録";
             
             document.getElementById('stat-success-count').innerText = totalSuccessCount;
@@ -758,7 +758,7 @@
 
         function openAccountModal() {
             document.getElementById('user-nickname').value = myNickname;
-            if(myPrefID) selectPrefEl.value = myPrefID;
+            if(myPrefID && prefectures.find(p => p.id === myPrefID)) selectPrefEl.value = myPrefID;
             accountModal.style.display = "flex";
         }
 
@@ -774,16 +774,16 @@
             if(myPrefID && myPrefID !== prefSelect) {
                 fbDB.ref('areas/' + myPrefID + '/total_soldiers').transaction((current) => (current || 1) - 1);
             }
-            if(!myPrefID || myPrefID !== prefSelect) {
-                fbDB.ref('areas/' + prefSelect + '/total_soldiers').transaction((current) => (current || 0) + 1);
-            }
+            fbDB.ref('areas/' + prefSelect + '/total_soldiers').transaction((current) => (current || 0) + 1);
 
             localStorage.setItem('furo_nickname', nicknameInput);
             localStorage.setItem('furo_pref_id', prefSelect);
             localStorage.setItem('furo_like_bath', likeBathSelect);
 
             myNickname = nicknameInput; myPrefID = prefSelect; myLikeBath = likeBathSelect;
-            userInfoDisplay.innerText = `[ SOLDIER: ${myNickname} / ${prefectures.find(p=>p.id===myPrefID).name} ]`;
+            
+            const matched = prefectures.find(p=>p.id===myPrefID);
+            userInfoDisplay.innerText = `[ SOLDIER: ${myNickname} / ${matched ? matched.name : 'UNKNOWN'} ]`;
 
             playBeep(1000, 0.2); accountModal.style.display = "none";
             refreshProfilePage();
@@ -794,8 +794,14 @@
             topDoor.classList.add('open-top'); bottomDoor.classList.add('open-bottom');
             setTimeout(() => {
                 mainPanel.classList.add('panel-visible');
-                if(!myNickname || !myPrefID) { accountModal.style.display = "flex"; } 
-                else { userInfoDisplay.innerText = `[ SOLDIER: ${myNickname} / ${prefectures.find(p=>p.id===myPrefID).name} ]`; }
+                
+                // 🛡️ 現在地が未登録、または古いおかしなデータの場合は安全に登録モーダルへ誘導
+                const matched = prefectures.find(p=>p.id===myPrefID);
+                if(!myNickname || !myPrefID || !matched) { 
+                    accountModal.style.display = "flex"; 
+                } else { 
+                    userInfoDisplay.innerText = `[ SOLDIER: ${myNickname} / ${matched.name} ]`; 
+                }
                 applySystemStatus();
             }, 500);
         });
@@ -842,7 +848,6 @@
 
         successBtn.addEventListener('click', () => {
             playBeep(1200, 0.15); reportModal.style.display = 'none';
-            
             localUserStatus = "CLEAN"; localStorage.setItem('furo_user_status', "CLEAN");
             
             const todayStr = getTodayString();
@@ -887,13 +892,13 @@
         });
 
         function incrementPrefecture(id) {
-            if(!id) return;
+            if(!id || !prefectures.find(p=>p.id===id)) return;
             fbDB.ref('areas/' + id + '/active_cancels').transaction((current) => (current || 0) + 1);
             fbDB.ref('global/total_active_cancels').transaction((current) => (current || 0) + 1);
         }
 
         function decrementPrefecture(id) {
-            if(!id) return;
+            if(!id || !prefectures.find(p=>p.id===id)) return;
             fbDB.ref('areas/' + id + '/active_cancels').transaction((current) => {
                 let val = (current || 0) - 1;
                 return val < 0 ? 0 : val;
