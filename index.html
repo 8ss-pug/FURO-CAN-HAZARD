@@ -102,28 +102,58 @@
             border: 1px solid rgba(0, 255, 204, 0.1); background: rgba(0, 0, 0, 0.3); padding: 20px;
         }
         .console-tag { font-size: 14px; color: #88ffcc; letter-spacing: 3px; margin-bottom: 20px; text-align: center; }
-        .report-btn {
-            width: 150px; height: 150px; border-radius: 50%;
-            background: radial-gradient(circle, #0f172a 0%, #020617 100%);
-            border: 5px solid #00ffcc; color: #00ffcc; font-size: 24px; font-weight: bold;
-            cursor: pointer; box-shadow: 0 0 30px rgba(0, 255, 204, 0.3); transition: all 0.3s ease;
-            position: relative; letter-spacing: 4px; padding-left: 4px;
-        }
-        .report-btn::before {
-            content: ''; position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px;
-            border-radius: 50%; border: 1px dashed rgba(0, 255, 204, 0.3); animation: spin 12s linear infinite;
-        }
-        .report-btn.decontaminate-mode { border-color: #ef4444; color: #ef4444; font-size: 20px; }
-        .report-btn.decontaminate-mode::before { border-color: rgba(239, 68, 68, 0.4); }
         
-        /* ✉️ 爆発的に目立つネオンマゼンタの報告書発行ボタン */
-        .share-trigger-btn {
-            margin-top: 20px; padding: 12px 24px; background: #ff0055; border: none;
-            color: #fff; font-size: 14px; font-weight: bold; cursor: pointer; letter-spacing: 2px;
-            border-radius: 3px; box-shadow: 0 0 15px #ff0055; transition: all 0.2s;
-            display: none; animation: pulse-pink 1s infinite alternate;
+        /* 🔘 改良：1秒でボタンだとわかる、立体サイバープッシュスイッチ */
+        .report-btn {
+            width: 160px; height: 160px; border-radius: 50%;
+            background: radial-gradient(circle, #152438 0%, #030812 80%, #000000 100%);
+            border: 5px solid #00ffcc; color: #00ffcc; font-size: 26px; font-weight: bold;
+            cursor: pointer; box-shadow: 0 0 20px rgba(0, 255, 204, 0.4), inset 0 0 15px rgba(0, 255, 204, 0.3);
+            position: relative; letter-spacing: 4px; padding-left: 4px;
+            transition: all 0.1s ease;
+            outline: none;
         }
-        .share-trigger-btn:hover { background: #ff3377; box-shadow: 0 0 25px #ff3377; }
+        /* 外枠のボルト留めガードレールエフェクト */
+        .report-btn::before {
+            content: ''; position: absolute; top: -14px; left: -14px; right: -14px; bottom: -14px;
+            border-radius: 50%; border: 2px solid #1e293b; border-top-color: #00ffcc; border-bottom-color: #00ffcc;
+            animation: spin 16s linear infinite; pointer-events: none;
+        }
+        /* タップ・ホバーしたときの押し込み立体感 */
+        .report-btn:hover {
+            box-shadow: 0 0 35px rgba(0, 255, 204, 0.7), inset 0 0 25px rgba(0, 255, 204, 0.5);
+            background: radial-gradient(circle, #1e3552 0%, #051021 80%, #000000 100%);
+        }
+        .report-btn:active {
+            transform: scale(0.94);
+            box-shadow: 0 0 10px rgba(0, 255, 204, 0.3), inset 0 0 30px rgba(0, 0, 0, 0.9);
+        }
+        /* ハザード状態の時の立体赤スイッチ */
+        .report-btn.decontaminate-mode {
+            border-color: #ef4444; color: #ef4444; font-size: 20px;
+            background: radial-gradient(circle, #451212 0%, #170404 80%, #000000 100%);
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.5), inset 0 0 15px rgba(239, 68, 68, 0.3);
+        }
+        .report-btn.decontaminate-mode::before { border-top-color: #ef4444; border-bottom-color: #ef4444; }
+        .report-btn.decontaminate-mode:hover {
+            background: radial-gradient(circle, #5c1616 0%, #260505 80%, #000000 100%);
+            box-shadow: 0 0 40px rgba(239, 68, 68, 0.8), inset 0 0 25px rgba(239, 68, 68, 0.5);
+        }
+
+        /* ✉️ 改良：普段は隠れており、報告直後だけシュッと出現する「ステルス・サイバー報告書ボタン」 */
+        .share-trigger-btn {
+            margin-top: 25px; padding: 12px 24px; background: transparent; 
+            border: 1px solid #f97316; /* 控えめなネオンオレンジ枠 */
+            color: #f97316; font-size: 13px; font-weight: bold; cursor: pointer; letter-spacing: 2px;
+            border-radius: 3px; box-shadow: 0 0 10px rgba(249, 115, 22, 0.2); transition: all 0.3s ease;
+            display: none; opacity: 0; transform: translateY(10px);
+        }
+        .share-trigger-btn.stealth-visible {
+            display: block; animation: fade-in-up 0.5s forwards, pulse-orange 1.5s infinite alternate;
+        }
+        .share-trigger-btn:hover { background: rgba(249, 115, 22, 0.08); box-shadow: 0 0 20px rgba(249, 115, 22, 0.5); }
+        .control-panel.hazard-alert-bg .share-trigger-btn { border-color: #ef4444; color: #ef4444; box-shadow: 0 0 10px rgba(239, 68, 68, 0.2); }
+        .control-panel.hazard-alert-bg .share-trigger-btn:hover { background: rgba(239, 68, 68, 0.08); box-shadow: 0 0 20px rgba(239, 68, 68, 0.5); }
 
         .next-schedule-display {
             margin-top: 15px; font-size: 13px; color: #f87171; border: 1px solid #ef4444;
@@ -169,7 +199,7 @@
         .log-item.success-log { border-left-color: #00ffcc; }
         .log-time { color: #64748b; margin-right: 8px; }
 
-        /* 【TAB 4】 MAP 画面 (日本地図リアル配置グリッド) */
+        /* 【TAB 4】 MAP 画面 */
         .map-wrapper {
             border: 1px solid rgba(0, 255, 204, 0.2); background: rgba(0, 0, 0, 0.5);
             padding: 15px; height: 100%; display: flex; flex-direction: column; align-items: center;
@@ -190,7 +220,6 @@
             overflow: auto;
         }
         
-        /* 🗺️ 天気予報の配置を完全再現した14列×12行のドット日本地図 */
         .cyber-grid-map {
             display: grid; grid-template-columns: repeat(14, 21px); grid-template-rows: repeat(12, 21px);
             gap: 2px; justify-content: center; margin: auto;
@@ -210,18 +239,38 @@
         /* 【TAB 5】 PROFILE 画面 */
         .profile-console {
             border: 1px solid rgba(0, 255, 204, 0.2); background: rgba(0, 0, 0, 0.5);
-            padding: 15px; height: 100%; display: flex; flex-direction: column; gap: 15px;
+            padding: 15px; height: 100%; display: flex; flex-direction: column; gap: 12px;
+            overflow-y: auto;
         }
         .profile-card-title { font-size: 14px; color: #00ffcc; border-bottom: 1px solid rgba(0,255,204,0.2); padding-bottom: 5px; }
-        .profile-item-box { display: flex; flex-direction: column; gap: 5px; }
+        .profile-item-box { display: flex; flex-direction: column; gap: 4px; }
         .profile-label { font-size: 11px; color: #64748b; }
-        .profile-value-display { font-size: 16px; color: #fff; background: #060c14; padding: 10px; border: 1px solid #1e293b; font-weight: bold; }
+        .profile-value-display { font-size: 15px; color: #fff; background: #060c14; padding: 10px; border: 1px solid #1e293b; font-weight: bold; }
+        
+        /* 📊 アイデア②：緑色に妖しく光る「生存進捗インジケーター」 */
+        .progress-container {
+            background: #060c14; border: 1px solid #1e293b; padding: 12px; margin-bottom: 5px;
+        }
+        .progress-bar-bg {
+            width: 100%; height: 14px; background: #111827; border: 1px solid #374151;
+            position: relative; overflow: hidden; border-radius: 2px; margin-top: 6px;
+        }
+        .progress-bar-fill {
+            width: 50%; height: 100%; background: linear-gradient(90deg, #059669, #00ffcc);
+            box-shadow: 0 0 10px #00ffcc; transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        /* 風呂キャン中の警告ショート赤バー */
+        .progress-bar-fill.bar-hazard {
+            background: linear-gradient(90deg, #b91c1c, #ef4444) !important;
+            box-shadow: 0 0 10px #ef4444 !important;
+        }
+
         .stats-meter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .stats-box { background: #060c14; border: 1px solid #1e293b; padding: 12px; text-align: center; }
         .stats-box .num { font-size: 24px; font-weight: bold; color: #00ffcc; font-family: monospace; }
         .stats-box .num.fail-num { color: #ef4444; }
         .edit-profile-trigger {
-            margin-top: auto; padding: 12px; background: #0c1524; border: 1px solid #00ffcc; color: #00ffcc;
+            margin-top: 10px; padding: 12px; background: #0c1524; border: 1px solid #00ffcc; color: #00ffcc;
             font-size: 14px; font-weight: bold; cursor: pointer; text-align: center;
         }
 
@@ -238,7 +287,7 @@
             animation: ad-scan 4s infinite linear;
         }
 
-        /* --- 💥 モーダル --- */
+        /* --- 💥 モーダル枠 --- */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 4, 8, 0.96); z-index: 20; justify-content: center; align-items: center; padding: 20px;
@@ -275,11 +324,10 @@
         .submit-failed-container .line1 { font-family: 'Share Tech Mono', sans-serif; font-size: 15px; font-weight: bold; color: #000; letter-spacing: 2px; }
         .submit-failed-container .line2 { font-family: 'DotGothic16', sans-serif; font-size: 13px; font-weight: bold; color: #000; margin-top: 2px; }
 
-        /* 🔒 シェア確認ウインドウ専用の設定 */
         .checkbox-label-cyber {
-            display: flex; align-items: center; justify-content: center; gap: 10px; color: #ff0055; font-size: 14px; margin-bottom: 20px; cursor: pointer; font-weight: bold;
+            display: flex; align-items: center; justify-content: center; gap: 10px; color: #f97316; font-size: 14px; margin-bottom: 20px; cursor: pointer; font-weight: bold;
         }
-        .checkbox-cyber { width: 18px; height: 18px; accent-color: #ff0055; }
+        .checkbox-cyber { width: 18px; height: 18px; accent-color: #f97316; }
 
         .choices-box { display: flex; flex-direction: column; gap: 15px; }
         .choice-btn {
@@ -296,13 +344,14 @@
         .btn-danger:hover { border-color: #ef4444; color: #ef4444; background: rgba(239, 68, 68, 0.03); }
         .btn-danger:hover::before { background: #ef4444; box-shadow: 0 0 10px #ef4444; animation: pulse-red 0.5s infinite alternate; }
 
-        /* --- アニメーション --- */
+        /* --- アメインメーション --- */
         @keyframes blink { 0% { opacity: 0.2; } 100% { opacity: 1; } }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes pulse-red { 0% { transform: translateY(-50%) scale(0.8); opacity: 0.5; } 100% { transform: translateY(-50%) scale(1.2); opacity: 1; } }
-        @keyframes pulse-pink { 0% { transform: scale(0.97); box-shadow: 0 0 8px #ff0055; } 100% { transform: scale(1.03); box-shadow: 0 0 20px #ff0055; } }
+        @keyframes pulse-orange { 0% { transform: scale(0.97); box-shadow: 0 0 5px rgba(249, 115, 22, 0.2); } 100% { transform: scale(1.03); box-shadow: 0 0 15px rgba(249, 115, 22, 0.6); } }
         @keyframes red-flash-bg { 0% { background: radial-gradient(circle, #100404 0%, #03060a 100%); } 100% { background: radial-gradient(circle, #2a0808 0%, #03060a 100%); } }
         @keyframes ad-scan { 0% { left: -100%; } 100% { left: 200%; } }
+        @keyframes fade-in-up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
 </head>
@@ -389,7 +438,16 @@
                         <div class="profile-value-display" id="prof-disp-type">未登録</div>
                     </div>
                     
-                    <p class="profile-card-title" style="margin-top:10px;">[ TOTAL STATS METER / 通算防衛成績 ]</p>
+                    <div class="profile-item-box">
+                        <span class="profile-label">SURVIVAL PROGRESS / 今月の生存進捗インジケーター</span>
+                        <div class="progress-container">
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" id="survival-indicator-bar"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="profile-card-title" style="margin-top:5px;">[ TOTAL STATS METER / 通算防衛成績 ]</p>
                     <div class="stats-meter-grid">
                         <div class="stats-box">
                             <span class="profile-label">生存日数 (入浴)</span>
@@ -415,16 +473,12 @@
         <div class="modal-content">
             <p class="modal-title">[ SOLDIER REGISTRATION ]</p>
             <p class="modal-subtitle">戦闘員のプロファイルを設定・変更せよ。</p>
-            
             <input type="text" class="input-text-cyber" id="user-nickname" placeholder="ニックネームを入力">
-            
             <select class="select-cyber" id="user-prefecture"></select>
-
             <select class="select-cyber" id="user-like-bath">
                 <option value="SHINY">[ TYPE: SHINY ] お風呂は好きである</option>
                 <option value="REBEL">[ TYPE: REBEL ] 正直お風呂は大嫌いである</option>
             </select>
-
             <button class="submit-cyber-btn" id="submit-account">データ同期・システム起動</button>
         </div>
     </div>
@@ -469,33 +523,30 @@
     </div>
 
     <div class="modal" id="share-modal" style="z-index: 25;">
-        <div class="modal-content" style="border-color: #ff0055; box-shadow: 0 0 25px rgba(255,0,85,0.2);">
-            <p class="modal-title" style="color: #ff0055;">[ REPORT TRANSMISSION ]</p>
+        <div class="modal-content" style="border-color: #f97316; box-shadow: 0 0 25px rgba(249,115,22,0.2);">
+            <p class="modal-title" style="color: #f97316;">[ REPORT TRANSMISSION ]</p>
             <p class="modal-subtitle" style="margin-bottom: 20px;">作戦報告書を発行。外部ネットへパケット転送せよ。</p>
-            
             <label class="checkbox-label-cyber">
                 <input type="checkbox" class="checkbox-cyber" id="hide-location-toggle">
                 現在エリアを隠蔽する (SECRET MODE)
             </label>
-
-            <button class="submit-failed-container" style="background: #ff0055;" id="confirm-share-btn" onclick="executeCopyReport()">
-                <div class="line1" style="color: #fff;">COPY PROTOCOL CODE</div>
-                <div class="line2" style="color: #fff;">報告書をクリップボードに生成</div>
+            <button class="submit-failed-container" style="background: #f97316;" id="confirm-share-btn" onclick="executeCopyReport()">
+                <div class="line1" style="color: #000;">COPY PROTOCOL CODE</div>
+                <div class="line2" style="color: #000;">報告書をクリップボードに生成</div>
             </button>
         </div>
     </div>
 
     <script>
-        // 🛰️ 【最重要アップデート】サーバーの混線を100%焼き尽くす「3大マルチリンク中継プロトコル」へ進化！
-        // アメリカ・ヨーロッパ・世界の複数サーバーを同時に束ねて1秒同期を確立します。
+        // 🛰️ サーバー混雑を完全防御する「3大マルチリンク中継プロトコル」
         const gun = Gun([
             'https://gun-manhattan.herokuapp.com/gun',
             'https://gun-us.herokuapp.com/gun',
             'https://gun-eu.herokuapp.com/gun'
         ]);
-        const db = gun.get('furocan-hazard-private-okayama-2026-final-v7'); 
+        const db = gun.get('furocan-hazard-private-okayama-2026-final-v9'); 
 
-        // 🗺️ 【天気予報配置】14列×12行のマス目で、日本列島本来の美しい弓なりのカーブを完全ドット化
+        // 🗺️ 天気予報日本地図リアル再現グリッド
         const prefectures = [
             { id: "hokkaido", name: "HKD", jp: "北海道", base: 1, x:13, y:0 }, 
             { id: "aomori", name: "AOM", jp: "青森", base: 0, x:11, y:1 },
@@ -558,6 +609,7 @@
         
         const accountModal = document.getElementById('account-modal'), selectPrefEl = document.getElementById('user-prefecture'), submitAccountBtn = document.getElementById('submit-account'), userInfoDisplay = document.getElementById('user-info-display');
         const cyberMapCanvas = document.getElementById('japan-cyber-map');
+        const survivalBarFill = document.getElementById('survival-indicator-bar');
 
         let audioCtx = null;
         let localUserStatus = localStorage.getItem('furo_user_status') || "CLEAN"; 
@@ -567,6 +619,7 @@
         let totalSuccessCount = parseInt(localStorage.getItem('furo_total_success')) || 0;
         let totalFailCount = parseInt(localStorage.getItem('furo_total_fail')) || 0;
 
+        // 🛡️ ガチガチに現在エリアをピン留めバインドするための最重要変数
         let myNickname = localStorage.getItem('furo_nickname') || "";
         let myPrefID = localStorage.getItem('furo_pref_id') || "";
         let myLikeBath = localStorage.getItem('furo_like_bath') || "";
@@ -574,7 +627,7 @@
         function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
         function playPshhhSound() {
             initAudio(); if (!audioCtx) return;
-            const bufferSize = audioCtx.sampleRate * 1.5, buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate), data = buffer.getChannelData(0);
+            const bufferSize = audioCtx.sampleRate * 1.5, buffer = bufferService = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate), data = buffer.getChannelData(0);
             for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
             const noise = audioCtx.createBufferSource(); noise.buffer = buffer;
             const filter = audioCtx.createBiquadFilter(); filter.type = 'bandpass'; filter.frequency.value = 800;
@@ -630,7 +683,6 @@
             selectPrefEl.innerHTML = '<option value="">現在エリアを選択</option>';
             cyberMapCanvas.innerHTML = "";
 
-            // 14列×12行のマスを完全にループ展開
             for (let y = 0; y < 12; y++) {
                 for (let x = 0; x < 14; x++) {
                     const node = document.createElement('div');
@@ -658,33 +710,38 @@
                                   <div class="area-stats"><span class="area-count" id="count-${p.id}">0人</span><span class="area-val" id="val-${p.id}">0%</span></div>`;
                 areaListEl.appendChild(item);
                 
-                // マルチリンクノード監視
                 db.get('prefectures').get(p.id).on((data) => {
                     if (data) {
-                        const count = data.count || 0, rate = data.rate || 0;
-                        document.getElementById(`count-${p.id}`).innerText = count.toLocaleString() + "人";
-                        document.getElementById(`val-${p.id}`).innerText = `${rate}%`;
-                        const itemEl = document.getElementById(`area-${p.id}`);
-                        
-                        const mapNodeEl = document.querySelector(`[data-pref-id="${p.id}"]`);
-                        
-                        if(mapNodeEl) {
-                            mapNodeEl.classList.remove('node-blue', 'node-yellow', 'node-red-flash');
-                            if (rate >= 31) {
-                                if(itemEl) itemEl.className = 'area-item danger-alert';
-                                mapNodeEl.classList.add('node-red-flash');
-                            } else if (rate >= 11) {
-                                if(itemEl) itemEl.className = 'area-item';
-                                mapNodeEl.classList.add('node-yellow');
-                            } else {
-                                if(itemEl) itemEl.className = 'area-item';
-                                mapNodeEl.classList.add('node-blue');
-                            }
-                        }
+                        updateLocalElementValues(p.id, data.count || 0, data.rate || 0);
                     }
                 });
             });
             db.get('totalCount').on((val) => { totalCountEl.innerText = (val || 0).toLocaleString() + "人"; });
+        }
+
+        // 🛡️ アイデア③：通信遅延を包囲するローカル・デバッグ(更新)処理
+        function updateLocalElementValues(prefId, count, rate) {
+            const countEl = document.getElementById(`count-${prefId}`);
+            const valEl = document.getElementById(`val-${prefId}`);
+            if(countEl) countEl.innerText = count.toLocaleString() + "人";
+            if(valEl) valEl.innerText = `${rate}%`;
+
+            const itemEl = document.getElementById(`area-${prefId}`);
+            const mapNodeEl = document.querySelector(`[data-pref-id="${prefId}"]`);
+            
+            if(mapNodeEl) {
+                mapNodeEl.classList.remove('node-blue', 'node-yellow', 'node-red-flash');
+                if (rate >= 31) {
+                    if(itemEl) itemEl.className = 'area-item danger-alert';
+                    mapNodeEl.classList.add('node-red-flash');
+                } else if (rate >= 11) {
+                    if(itemEl) itemEl.className = 'area-item';
+                    mapNodeEl.classList.add('node-yellow');
+                } else {
+                    if(itemEl) itemEl.className = 'area-item';
+                    mapNodeEl.classList.add('node-blue');
+                }
+            }
         }
 
         function refreshMapColors(isYesterday) {
@@ -693,13 +750,11 @@
                 if(mapNodeEl) {
                     mapNodeEl.classList.remove('node-blue', 'node-yellow', 'node-red-flash');
                     if(isYesterday) {
-                        // 昨日のアーカイブ3色色分けデータ
                         let mockRate = (p.base * 27 + 19) % 70;
                         if (mockRate >= 31) mapNodeEl.classList.add('node-red-flash');
                         else if (mockRate >= 11) mapNodeEl.classList.add('node-yellow');
                         else mapNodeEl.classList.add('node-blue');
                     } else {
-                        // 今日のリアルタイム3色連動
                         db.get('prefectures').get(p.id).once((data) => {
                             let rate = (data && data.rate) ? data.rate : 0;
                             if (rate >= 31) mapNodeEl.classList.add('node-red-flash');
@@ -756,8 +811,7 @@
                 mainSwitchTag.innerText = "[ 警報：緊急除染プロトコルを実行せよ ]";
                 
                 const savedTime = localStorage.getItem('furo_next_time') || "07:00";
-                nextSchedule.innerText = `NEXT DECONTAMINATION: 明明日 ${savedTime}`; nextSchedule.style.display = 'block';
-                shareReportBtn.style.display = 'block'; 
+                nextSchedule.innerText = `NEXT DECONTAMINATION: 明日 ${savedTime}`; nextSchedule.style.display = 'block';
             } else {
                 mainPanel.classList.remove('hazard-alert-bg'); mainStatusHeader.classList.remove('hazard-alert-border');
                 alertStatus.innerText = 'STATUS: CLEAN'; alertStatus.style.background = '#00ffcc'; alertStatus.style.color = '#000'; alertStatus.classList.remove('hazard-badge');
@@ -765,9 +819,22 @@
                 reportBtn.classList.remove('decontaminate-mode'); reportBtn.innerText = "REPORT";
                 mainSwitchTag.innerText = "[ MISSION REPORT SWITCH ]";
                 nextSchedule.style.display = 'none';
-                shareReportBtn.style.display = 'block'; 
             }
             updateRankDisplay();
+            updateSurvivalIndicator();
+        }
+
+        // 📊 アイデア②：生存進捗バーのリアルタイム更新
+        function updateSurvivalIndicator() {
+            if(!survivalBarFill) return;
+            if(localUserStatus === "HAZARD") {
+                survivalBarFill.style.width = "20%";
+                survivalBarFill.classList.add('bar-hazard');
+            } else {
+                survivalBarFill.classList.remove('bar-hazard');
+                let basePercent = 40 + (consecutiveDays * 8);
+                survivalBarFill.style.width = `${Math.min(100, basePercent)}%`;
+            }
         }
 
         function refreshProfilePage() {
@@ -778,6 +845,7 @@
             
             document.getElementById('stat-success-count').innerText = totalSuccessCount;
             document.getElementById('stat-fail-count').innerText = totalFailCount;
+            updateSurvivalIndicator();
         }
 
         function openAccountModal() {
@@ -788,7 +856,7 @@
 
         buildSystemComponents(); checkAndInitDatabase();
 
-        // プロファイルセーブ
+        // アカウント同期
         submitAccountBtn.addEventListener('click', () => {
             const nicknameInput = document.getElementById('user-nickname').value.trim();
             const prefSelect = selectPrefEl.value;
@@ -817,34 +885,30 @@
             }, 500);
         });
 
-        // 🔒 シェア用モーダルを展開する
         function openShareModal() {
             playBeep(800, 0.05);
             shareModal.style.display = 'flex';
         }
 
-        // 🔒 現在地隠蔽トグル付きの「本物のURL自動取得リンク」シェア発行マシーン！
         function executeCopyReport() {
             const hideLocation = document.getElementById('hide-location-toggle').checked;
-            
             let areaString = hideLocation ? "SECRET (隠蔽中)" : myPrefID.toUpperCase();
             let statusText = localUserStatus === "HAZARD" ? "作戦失敗（風呂キャンセル）" : "任務完了（除染成功）";
             let reasonText = localUserStatus === "HAZARD" ? localStorage.getItem('furo_last_reason') || "精神的敗北" : "己の恐怖に打ち勝ったため";
             let nextTimeText = localUserStatus === "HAZARD" ? `明日 ${localStorage.getItem('furo_next_time') || "07:00"} 開始` : "定刻通り次回防衛ラインへ";
             let typeLabel = myLikeBath.includes("REBEL") ? "REBEL (風呂嫌い)" : "SHINY (風呂好き)";
             
-            // 現在開いているGitHub PagesのサイトURLを自動で取得して合体させる
             const currentAppUrl = window.location.href;
-
             const reportText = `【風呂キャン・ハザード作戦報告書】\n■ 戦闘員：${myNickname} [TYPE: ${typeLabel}]\n■ 現在エリア：${areaString}\n■ 状況：${statusText}\n■ 理由：${reasonText}\n■ 次回作戦：${nextTimeText}\n\n▼ 電脳お風呂防衛指令室にアクセスせよ\n${currentAppUrl}\n🌐 #風呂キャンセル界隈 #風呂キャンハザード`;
             
             navigator.clipboard.writeText(reportText).then(() => {
                 playBeep(1200, 0.3);
                 shareModal.style.display = 'none';
-                alert("📡 報告書及び暗号化リンクをコピーした！SNS(X)等にペーストして転送せよ！");
+                alert("📡 作戦報告書をコピーした！SNS(X)等にペーストして転送せよ！");
             });
         }
 
+        // REPORT / DECONTAMINATE
         reportBtn.addEventListener('click', () => {
             playBeep(880, 0.1);
             if (audioCtx) initAudio(); 
@@ -860,12 +924,16 @@
                 }
                 
                 applySystemStatus(); addLog('recovery'); 
+                
+                // 🛡️ アイデア③：ローカル・デバッグ優先シミュレーション(裏で通信を待たずに即反映)
+                simulateLocalDecrement(myPrefID);
                 setTimeout(() => { decrementPrefecture(myPrefID); }, 50);
             } else {
                 reportModal.style.display = 'flex';
             }
         });
 
+        // 入浴成功
         successBtn.addEventListener('click', () => {
             playBeep(1200, 0.15);
             reportModal.style.display = 'none';
@@ -880,9 +948,16 @@
             }
             
             applySystemStatus(); addLog('success');
+            
+            // 🛡️ ローカル・デバッグ優先シミュレーション
+            simulateLocalDecrement(myPrefID);
             setTimeout(() => { decrementPrefecture(myPrefID); }, 50);
+            
+            // ✉️ ステルス出現
+            shareReportBtn.classList.add('stealth-visible');
         });
 
+        // 風呂キャン
         failBtn.addEventListener('click', () => {
             playAlarmSound();
             reportModal.style.display = 'none';
@@ -895,6 +970,7 @@
             applySystemStatus();
         });
 
+        // 報告書送信
         submitFailedBtn.addEventListener('click', () => {
             playBeep(600, 0.4);
             let hour = document.getElementById('time-hour').value || '07';
@@ -911,8 +987,38 @@
             applySystemStatus();
             addLog('fail', reason, `明日 ${targetTime}`);
             
+            // 🛡️ ローカル・デバッグ優先シミュレーション
+            simulateLocalIncrement(myPrefID);
             setTimeout(() => { incrementPrefecture(myPrefID); }, 50);
+            
+            // ✉️ ステルス出現
+            shareReportBtn.classList.add('stealth-visible');
         });
+
+        // 🛡️ アイデア③：スタンドアロンデバッグ用シミュレーション関数群
+        function simulateLocalIncrement(prefId) {
+            if(!prefId) return;
+            const target = prefectures.find(p=>p.id === prefId);
+            if(target) {
+                target.count += 1;
+                target.rate = parseFloat(Math.min(100, target.count * 12.5).toFixed(1));
+                updateLocalElementValues(prefId, target.count, target.rate);
+                totalCount += 1;
+                totalCountEl.innerText = totalCount.toLocaleString() + "人";
+            }
+        }
+
+        function simulateLocalDecrement(prefId) {
+            if(!prefId) return;
+            const target = prefectures.find(p=>p.id === prefId);
+            if(target && target.count > 0) {
+                target.count -= 1;
+                target.rate = parseFloat(Math.min(100, target.count * 12.5).toFixed(1));
+                updateLocalElementValues(prefId, target.count, target.rate);
+                totalCount = Math.max(0, totalCount - 1);
+                totalCountEl.innerText = totalCount.toLocaleString() + "人";
+            }
+        }
 
         function incrementPrefecture(id) {
             if(!id) return;
@@ -932,6 +1038,16 @@
                 db.get('prefectures').get(id).put({ count: currentCount, rate: currentRate });
             });
             db.get('totalCount').once((total) => { db.get('totalCount').put(Math.max(0, (total || 0) - 1)); });
+        }
+
+        function updateRankDisplay() {
+            if (localUserStatus === "HAZARD") {
+                rankBadge.innerText = "RANK: [ 廃液生命体 - SLUDGE LIFE ]"; rankBadge.style.color = "#ef4444";
+            } else {
+                if (consecutiveDays >= 7) { rankBadge.innerText = `RANK: [ 浄化神 - PURITY GOD ] (${consecutiveDays}日連続)`; rankBadge.style.color = "#00ffcc"; }
+                else if (consecutiveDays >= 3) { rankBadge.innerText = `RANK: [ 除染官 - DECONTAMINATOR ] (${consecutiveDays}日連続)`; rankBadge.style.color = "#88ffcc"; }
+                else { rankBadge.innerText = `RANK: [ 一般市民 - CITIZEN ] (${consecutiveDays}日連続)`; rankBadge.style.color = "#64748b"; }
+            }
         }
 
         function getTodayString() {
