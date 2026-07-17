@@ -6,15 +6,25 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <style>
-        body { background: #03060a; color: #00ffcc; font-family: sans-serif; margin: 0; padding: 20px; font-size: 18px; }
-        .area-item { display: flex; justify-content: space-between; padding: 20px; border-bottom: 1px solid #333; font-size: 22px; }
-        .danger { color: #ff4444; font-weight: bold; }
+        body { background: #03060a; color: #00ffcc; font-family: sans-serif; margin: 0; }
+        .tab-content { padding: 20px; display: none; }
+        .tab-active { display: block; }
         .report-btn { width: 100%; padding: 30px; background: #00ffcc; color: #000; font-size: 24px; font-weight: bold; border: none; cursor: pointer; }
+        .rank-item { display: flex; justify-content: space-between; padding: 20px; border-bottom: 1px solid #333; font-size: 20px; }
+        .danger { color: #ff4444; }
     </style>
 </head>
 <body>
-    <button class="report-btn" onclick="openReport()">風呂キャン報告</button>
-    <div id="monitor-tab"></div>
+    <div id="app">
+        <div id="control-tab" class="tab-content tab-active">
+            <button class="report-btn" onclick="openReport()">風呂キャン報告</button>
+            <button onclick="switchTab('monitor')">全国状況</button>
+        </div>
+        <div id="monitor-tab" class="tab-content">
+            <div id="rank-list"></div>
+            <button onclick="switchTab('control')">戻る</button>
+        </div>
+    </div>
 
     <script>
         const firebaseConfig = { databaseURL: "https://furocan-hazard-default-rtdb.firebaseio.com/" };
@@ -22,9 +32,16 @@
         const fbDB = firebase.database();
         const prefs = ["hokkaido", "tokyo", "okayama", "osaka"];
 
+        function switchTab(t) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('tab-active'));
+            document.getElementById(t + '-tab').classList.add('tab-active');
+        }
+
         function openReport() {
             const status = prompt("入浴済なら'1', 風呂キャンなら'2'を入力");
             const myPref = localStorage.getItem('furo_pref_id') || "tokyo";
+            if(!myPref) { alert("プロファイルから現在地を設定して！"); return; }
+            
             if(status === '2') {
                 fbDB.ref('areas/' + myPref + '/active_cancels').transaction(c => (c || 0) + 1);
                 fbDB.ref('global/total_active_cancels').transaction(c => (c || 0) + 1);
@@ -34,18 +51,18 @@
             }
         }
 
-        // 全都道府県を監視して合算集計を表示
-        prefs.forEach(id => {
-            fbDB.ref('areas/' + id).on('value', (s) => {
-                const data = s.val() || { active_cancels: 0, total_soldiers: 1 };
+        // リアルタイム集計システム
+        fbDB.ref('areas').on('value', (snapshot) => {
+            const areas = snapshot.val();
+            let html = "";
+            for(let id in areas) {
+                const data = areas[id];
                 const rate = data.total_soldiers > 0 ? (data.active_cancels / data.total_soldiers) * 100 : 0;
-                let el = document.getElementById(id);
-                if (!el) {
-                    el = document.createElement('div'); el.id = id; el.className = 'area-item';
-                    document.getElementById('monitor-tab').appendChild(el);
-                }
-                el.innerHTML = `<span>${id.toUpperCase()}</span> <span class="${rate > 30 ? 'danger' : ''}">${rate.toFixed(1)}% (${data.active_cancels}人)</span>`;
-            });
+                html += `<div class="rank-item ${rate > 30 ? 'danger' : ''}">
+                            ${id.toUpperCase()} <span>${rate.toFixed(1)}% (${data.active_cancels || 0}人)</span>
+                         </div>`;
+            }
+            document.getElementById('rank-list').innerHTML = html;
         });
     </script>
 </body>
