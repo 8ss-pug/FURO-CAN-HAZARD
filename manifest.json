@@ -1,0 +1,21 @@
+{
+  "short_name": "風呂ハザード",
+  "name": "風呂キャン・ハザード (FURO-CAN HAZARD)",
+  "icons": [
+    {
+      "src": "https://dummyimage.com/192x192/03060a/00ffcc.png&text=BATH",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "https://dummyimage.com/512x512/03060a/00ffcc.png&text=FURO_HAZARD",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "./index.html",
+  "background_color": "#03060a",
+  "theme_color": "#03060a",
+  "display": "standalone",
+  "orientation": "portrait"
+}
