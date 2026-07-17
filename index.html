@@ -585,6 +585,7 @@
             }
         }
 
+        // 🛡️ 画面要素を完全に組み立てる関数（Firebaseの接続前に実行させる）
         function buildSystemComponents() {
             areaListEl.innerHTML = "";
             selectPrefEl.innerHTML = '<option value="">現在エリアを選択</option>';
@@ -616,7 +617,12 @@
                 item.innerHTML = `<span class="area-name">${p.name} <span class="area-jp">(${p.jp})</span></span>
                                   <div class="area-stats"><span class="area-count" id="count-${p.id}">0人</span><span class="area-val" id="val-${p.id}">0%</span></div>`;
                 areaListEl.appendChild(item);
-                
+            });
+        }
+
+        // 🛰️ 画面組み立てが完了した後に安全に Firebase サーバーに回線を繋ぐ関数
+        function connectFirebaseNetwork() {
+            prefectures.forEach(p => {
                 fbDB.ref('areas/' + p.id).on('value', (snapshot) => {
                     const data = snapshot.val();
                     let cancels = 0;
@@ -746,7 +752,7 @@
         function refreshProfilePage() {
             document.getElementById('prof-disp-name').innerText = myNickname || "未登録";
             
-            // 🛡️ 【最重要セーフティ】過去の古いデータ（カタカナ等）が混ざっていても絶対にクラッシュさせない安全フィルター
+            // 🛡️ 古い残骸データが保存庫に残っていても100%クラッシュさせない安全ガード
             const currentPref = prefectures.find(p => p.id === myPrefID);
             document.getElementById('prof-disp-sector').innerText = currentPref ? `${currentPref.jp}` : "未登録 (再設定してください)";
             document.getElementById('prof-disp-type').innerText = myLikeBath || "未登録";
@@ -762,7 +768,9 @@
             accountModal.style.display = "flex";
         }
 
-        buildSystemComponents(); applySystemStatus();
+        // 🚀 【真の最終大手術】初期化プロトコルのタイミングを完全矯正
+        buildSystemComponents(); // 1. 先に画面のHTML要素を100%完璧に組み立てる
+        applySystemStatus();    // 2. 画面のクリーン/ハザード状態を適用
 
         submitAccountBtn.addEventListener('click', () => {
             const nicknameInput = document.getElementById('user-nickname').value.trim();
@@ -771,7 +779,7 @@
 
             if(!nicknameInput || !prefSelect) { alert("プロファイルを正しく入力せよ。"); return; }
             
-            if(myPrefID && myPrefID !== prefSelect) {
+            if(myPrefID && myPrefID !== prefSelect && prefectures.find(p=>p.id===myPrefID)) {
                 fbDB.ref('areas/' + myPrefID + '/total_soldiers').transaction((current) => (current || 1) - 1);
             }
             fbDB.ref('areas/' + prefSelect + '/total_soldiers').transaction((current) => (current || 0) + 1);
@@ -789,13 +797,16 @@
             refreshProfilePage();
         });
 
+        // 🚪 ハッチオープン！
         bootBtn.addEventListener('click', () => {
             playPshhhSound(); bootBtn.style.display = 'none';
             topDoor.classList.add('open-top'); bottomDoor.classList.add('open-bottom');
             setTimeout(() => {
                 mainPanel.classList.add('panel-visible');
                 
-                // 🛡️ 現在地が未登録、または古いおかしなデータの場合は安全に登録モーダルへ誘導
+                // 3. ハッチが無事に開いた『直後』に、Firebaseの超高速リアルタイム通信ルートを安全に開通させる！
+                connectFirebaseNetwork();
+
                 const matched = prefectures.find(p=>p.id===myPrefID);
                 if(!myNickname || !myPrefID || !matched) { 
                     accountModal.style.display = "flex"; 
